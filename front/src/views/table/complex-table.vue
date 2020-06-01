@@ -40,45 +40,63 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Date" width="150px" align="center">
+      <el-table-column label="Code" width="100px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.code }}</span>
+          <!-- <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span> -->
         </template>
       </el-table-column>
-      <el-table-column label="Title" min-width="150px">
+      <el-table-column label="Name" prop="name" width="300px" sortable="custom">
         <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span>
-          <el-tag>{{ row.type | typeFilter }}</el-tag>
+          <span>{{ row.name }}</span>
+          <!-- <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span> -->
+          <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
         </template>
       </el-table-column>
-      <el-table-column label="Author" width="110px" align="center">
+      <el-table-column label="Balance" prop="balance" width="110px" align="center" sortable="custom">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.balance }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="showReviewer" label="Reviewer" width="110px" align="center">
+      <!-- <el-table-column v-if="showReviewer" label="Reviewer" width="110px" align="center">
         <template slot-scope="{row}">
           <span style="color:red;">{{ row.reviewer }}</span>
         </template>
-      </el-table-column>
-      <el-table-column label="Imp" width="80px">
+      </el-table-column> -->
+      <el-table-column label="CostAvg" width="80px">
         <template slot-scope="{row}">
-          <svg-icon v-for="n in + row.importance" :key="n" icon-class="star" class="meta-item__icon" />
+          <!-- <svg-icon v-for="n in + row.importance" :key="n" icon-class="star" class="meta-item__icon" /> -->
+          <span>{{ row.costavg }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Readings" align="center" width="95">
+      <el-table-column label="净值" align="center" width="95">
         <template slot-scope="{row}">
-          <span v-if="row.pageviews" class="link-type" @click="handleFetchPv(row.pageviews)">{{ row.pageviews }}</span>
-          <span v-else>0</span>
+          <!-- <span v-if="row.pageviews" class="link-type" @click="handleFetchPv(row.pageviews)">{{ row.pageviews }}</span>
+          <span v-else>0</span> -->
+          <span>{{ row.networth }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Status" class-name="status-col" width="100">
+      <el-table-column label="日增长率" align="center" width="95">
+        <template slot-scope="{row}">
+          <!-- <span v-if="row.pageviews" class="link-type" @click="handleFetchPv(row.pageviews)">{{ row.pageviews }}</span>
+          <span v-else>0</span> -->
+          <span>{{ row.daygrowth }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="最新净值时间" align="center" width="95">
+        <template slot-scope="{row}">
+          <!-- <span v-if="row.pageviews" class="link-type" @click="handleFetchPv(row.pageviews)">{{ row.pageviews }}</span>
+          <span v-else>0</span> -->
+          <span>{{ row.worthdate }}</span>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column label="Status" class-name="status-col" width="100">
         <template slot-scope="{row}">
           <el-tag :type="row.status | statusFilter">
             {{ row.status }}
           </el-tag>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
@@ -100,28 +118,23 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="Type" prop="type">
+      <el-form ref="dataForm" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
+        <!-- <el-form-item label="Type" prop="type">
           <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
             <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
         </el-form-item>
         <el-form-item label="Date" prop="timestamp">
           <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
+        </el-form-item> -->
+        <el-form-item label="Name" prop="title">
+          <el-input v-model="temp.name" />
         </el-form-item>
-        <el-form-item label="Title" prop="title">
-          <el-input v-model="temp.title" />
+        <el-form-item label="余额" prop="title">
+          <el-input v-model="temp.balance" />
         </el-form-item>
-        <el-form-item label="Status">
-          <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Imp">
-          <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />
-        </el-form-item>
-        <el-form-item label="Remark">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
+        <el-form-item label="成本价" prop="title">
+          <el-input v-model="temp.costavg" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -147,8 +160,8 @@
 </template>
 
 <script>
-import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
-import { fetchList2 } from '@/api/article2'
+import { fetchPv, createArticle } from '@/api/article'
+import { fetchList2, getById, update2 } from '@/api/article2'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -202,14 +215,20 @@ export default {
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
+      // temp: {
+      //   id: undefined,
+      //   importance: 1,
+      //   remark: '',
+      //   timestamp: new Date(),
+      //   title: '',
+      //   type: '',
+      //   status: 'published'
+      // },
       temp: {
         id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        type: '',
-        status: 'published'
+        name: '',
+        balance: 0,
+        costavg: 0
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -228,22 +247,29 @@ export default {
     }
   },
   created() {
-    this.getList()
+    this.getList('id', 'asc')
   },
   methods: {
-    getList() {
+    getList(sort, order) {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
+      // fetchList(this.listQuery).then(response => {
+      //   this.list = response.data.items
+      //   this.total = response.data.total
 
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
-      })
-      fetchList2(this.listQuery).then(response => {
-        this.list = response.data.items
+      //   // Just to simulate the time of the request
+      //   setTimeout(() => {
+      //     this.listLoading = false
+      //   }, 1.5 * 1000)
+      // })
+      // console.log(this.listQuery)
+      const parm = {}
+      parm.page = 1
+      parm.rows = 1000
+      parm.sort = sort
+      parm.order = order
+      fetchList2(parm).then(response => {
+        // console.log(response)
+        this.list = response.data.rows
         this.total = response.data.total
 
         // Just to simulate the time of the request
@@ -264,16 +290,40 @@ export default {
       row.status = status
     },
     sortChange(data) {
+      console.log('click sort')
+      console.log(data)
       const { prop, order } = data
       if (prop === 'id') {
         this.sortByID(order)
       }
+      if (prop === 'name') {
+        this.sortByName(order)
+      }
+      if (prop === 'balance') {
+        this.sortByBalance(order)
+      }
     },
     sortByID(order) {
       if (order === 'ascending') {
-        this.listQuery.sort = '+id'
+        this.getList('id', 'asc')
       } else {
-        this.listQuery.sort = '-id'
+        this.getList('id', 'desc')
+      }
+      this.handleFilter()
+    },
+    sortByName(order) {
+      if (order === 'ascending') {
+        this.getList('name', 'asc')
+      } else {
+        this.getList('name', 'desc')
+      }
+      this.handleFilter()
+    },
+    sortByBalance(order) {
+      if (order === 'ascending') {
+        this.getList('balance', 'asc')
+      } else {
+        this.getList('balance', 'desc')
       }
       this.handleFilter()
     },
@@ -315,8 +365,18 @@ export default {
       })
     },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
+      // this.temp = Object.assign({}, row) // copy obj
+      // this.temp.timestamp = new Date(this.temp.timestamp)
+      const parm = {}
+      parm.Id = row.id
+      getById(parm).then(response => {
+        console.log(response)
+        this.temp = response.data
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -324,22 +384,20 @@ export default {
       })
     },
     updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
-            const index = this.list.findIndex(v => v.id === this.temp.id)
-            this.list.splice(index, 1, this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
+      const tempData = Object.assign({}, this.temp)
+      // const tempData = Object.assign({}, this.temp)
+      // tempData.timestamp = +new Date(tempData.timestamp)
+      // console.log(tempData)
+      update2(tempData).then(() => {
+        const index = this.list.findIndex(v => v.id === this.temp.id)
+        this.list.splice(index, 1, this.temp)
+        this.dialogFormVisible = false
+        this.$notify({
+          title: 'Success',
+          message: 'Update Successfully',
+          type: 'success',
+          duration: 2000
+        })
       })
     },
     handleDelete(row, index) {

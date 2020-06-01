@@ -248,6 +248,10 @@ namespace MSS.Platform.Workflow.WebApi.Controllers
             return ret;
         }
 
+        /// <summary>
+        /// 初始化，仅用一次
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GetMyfund")]
         public async Task<ActionResult<ApiResult>> GetMyfund()
         {
@@ -263,6 +267,10 @@ namespace MSS.Platform.Workflow.WebApi.Controllers
             return ret;
         }
 
+        /// <summary>
+        /// 更新最新净值和日增长，从接口到db
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GetMyfund2")]
         public async Task<ActionResult<ApiResult>> GetMyfund2()
         {
@@ -285,6 +293,60 @@ namespace MSS.Platform.Workflow.WebApi.Controllers
             try
             {
                 ret = await _service.GetPageList(parm);
+
+            }
+            catch (System.Exception ex)
+            {
+                ret.msg = string.Format(
+                    "获取分页数据Myfund失败, 异常信息:{0}",
+                    ex.Message);
+            }
+            return ret;
+        }
+
+        [HttpGet("Update2")]
+        public async Task<ActionResult<ApiResult>> Update2([FromQuery] Myfund obj)
+        {
+            ApiResult ret = new ApiResult { code = Code.Failure };
+            try
+            {
+                ret = await _service.Update2(obj);
+
+            }
+            catch (System.Exception ex)
+            {
+                ret.msg = string.Format(
+                    "获取分页数据Myfund失败, 异常信息:{0}",
+                    ex.Message);
+            }
+            return ret;
+        }
+
+        [HttpGet("UpdateNewBalance")]
+        public async Task<ActionResult<ApiResult>> UpdateNewBalance()
+        {
+            ApiResult ret = new ApiResult { code = Code.Failure };
+            try
+            {
+                ret = await _service.UpdateNewBalance();
+
+            }
+            catch (System.Exception ex)
+            {
+                ret.msg = string.Format(
+                    "获取分页数据Myfund失败, 异常信息:{0}",
+                    ex.Message);
+            }
+            return ret;
+        }
+
+        [HttpGet("GetById")]
+        public async Task<ActionResult<ApiResult>> GetById([FromQuery] Myfund obj)
+        {
+            ApiResult ret = new ApiResult { code = Code.Failure };
+            try
+            {
+                ret = await _service.GetById(obj.Id);
 
             }
             catch (System.Exception ex)

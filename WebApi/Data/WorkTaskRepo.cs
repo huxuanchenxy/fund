@@ -17,6 +17,7 @@ namespace MSS.Platform.Workflow.WebApi.Data
         Task<Myfund> GetByCode(string code);
         Task<int> Update2(Myfund obj);
         Task<MyfundPageView> GetPageList(MyfundParm parm);
+        Task<Myfund> GetById(int id);
     }
 
     public class WorkTaskRepo : BaseRepo, IWorkTaskRepo<TaskViewModel>
@@ -337,6 +338,16 @@ namespace MSS.Platform.Workflow.WebApi.Data
             {
                 var result = await c.QueryFirstOrDefaultAsync<Myfund>(
                     "SELECT * FROM myfund WHERE code = @code", new { code = code });
+                return result;
+            });
+        }
+
+        public async Task<Myfund> GetById(int id)
+        {
+            return await WithConnection(async c =>
+            {
+                var result = await c.QueryFirstOrDefaultAsync<Myfund>(
+                    "SELECT * FROM myfund WHERE id = @id", new { id = id });
                 return result;
             });
         }

@@ -263,5 +263,38 @@ namespace MSS.Platform.Workflow.WebApi.Controllers
             return ret;
         }
 
+        [HttpGet("GetMyfund2")]
+        public async Task<ActionResult<ApiResult>> GetMyfund2()
+        {
+            ApiResult ret = new ApiResult();
+            try
+            {
+                ret = await _service.InitData2();
+            }
+            catch (System.Exception ex)
+            {
+
+            }
+            return ret;
+        }
+
+        [HttpGet("GetPageList")]
+        public async Task<ActionResult<ApiResult>> GetPageList([FromQuery] MyfundParm parm)
+        {
+            ApiResult ret = new ApiResult { code = Code.Failure };
+            try
+            {
+                ret = await _service.GetPageList(parm);
+
+            }
+            catch (System.Exception ex)
+            {
+                ret.msg = string.Format(
+                    "获取分页数据Myfund失败, 异常信息:{0}",
+                    ex.Message);
+            }
+            return ret;
+        }
+
     }
 }

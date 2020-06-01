@@ -13,12 +13,50 @@ namespace MSS.Platform.Workflow.WebApi.Data
         Task<WorkTaskPageView> GetPageMyApply(WorkTaskQueryParm parm);
         Task<WorkTaskPageView> GetPageActivityInstance(WorkQueryParm parm);
         Task<Myfund> Save2(Myfund obj);
+        Task<int> Update(Myfund obj);
+        Task<Myfund> GetByCode(string code);
+        Task<int> Update2(Myfund obj);
+        Task<MyfundPageView> GetPageList(MyfundParm parm);
     }
 
     public class WorkTaskRepo : BaseRepo, IWorkTaskRepo<TaskViewModel>
     {
         public WorkTaskRepo(DapperOptions options) : base(options) { }
 
+        public async Task<MyfundPageView> GetPageList(MyfundParm parm)
+        {
+            return await WithConnection(async c =>
+            {
+
+                StringBuilder sql = new StringBuilder();
+                sql.Append($@"  SELECT 
+                id,
+                code,
+                name,
+                balance,
+                costavg,
+                networth,
+                totalworth,
+                worthdate,
+                daygrowth,updatetime FROM myfund
+                 ");
+                StringBuilder whereSql = new StringBuilder();
+
+
+                sql.Append(whereSql);
+
+                var data = await c.QueryAsync<Myfund>(sql.ToString());
+                var total = data.ToList().Count;
+                sql.Append(" order by " + parm.sort + " " + parm.order)
+                .Append(" limit " + (parm.page - 1) * parm.rows + "," + parm.rows);
+                var ets = await c.QueryAsync<Myfund>(sql.ToString());
+
+                MyfundPageView ret = new MyfundPageView();
+                ret.rows = ets.ToList();
+                ret.total = total;
+                return ret;
+            });
+        }
         public async Task<WorkTaskPageView> GetPageList(WorkTaskQueryParm parm)
         {
             return await WithConnection(async c =>
@@ -262,6 +300,44 @@ namespace MSS.Platform.Workflow.WebApi.Data
                 int newid = await c.QueryFirstOrDefaultAsync<int>(sql, obj);
                 obj.Id = newid;
                 return obj;
+            });
+        }
+
+        public async Task<int> Update(Myfund obj)
+        {
+            return await WithConnection(async c =>
+            {
+                var result = await c.ExecuteAsync($@" UPDATE myfund set 
+                    networth=@Networth,
+                    totalworth=@Totalworth,
+                    worthdate=@Worthdate,
+                    daygrowth=@Daygrowth,
+                    updatetime=@Updatetime
+                 where id=@Id", obj);
+                return result;
+            });
+        }
+
+        public async Task<int> Update2(Myfund obj)
+        {
+            return await WithConnection(async c =>
+            {
+                var result = await c.ExecuteAsync($@" UPDATE myfund set 
+                    balance=@Balance,
+                    costavg=@Costavg,
+                    updatetime=@Updatetime
+                 where id=@Id", obj);
+                return result;
+            });
+        }
+
+        public async Task<Myfund> GetByCode(string code)
+        {
+            return await WithConnection(async c =>
+            {
+                var result = await c.QueryFirstOrDefaultAsync<Myfund>(
+                    "SELECT * FROM myfund WHERE code = @code", new { code = code });
+                return result;
             });
         }
     }

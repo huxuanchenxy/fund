@@ -258,6 +258,67 @@ namespace MSS.Platform.Workflow.WebApi.Service
             }
         }
 
+        public async Task<ApiResult> InitData2()
+        {
+            ApiResult ret = new ApiResult();
+            try
+            {
+                string fundcode = "001838,165513,008889,006031,008087,007574,519191,004854,519981,096001,206011,165520,040048,180003,161130,001092,118002,007824,000822,519171,164819,004317,008121,162411,161036,002938,002251,501012,003359,000995,005457,260109,160638,160630,502023,001230,006676,213008,165525,168204,168203,001628,161725,164908,161129,160141,160216,160222,050018,050024,002982,000179,003634,070001,160723,007216,160631,003194,163208,167301,539003,001552,001210,740001,005478,006105,200010,006128,006197,002345,519185,519196,161819,005033,005037,001261,006439,006438,160516,270042,450002,160218,160221,006817,001723,007164,519170,164824,164825,164402,161724,001404,161720,080002,350002,006282,006250,378546,005052,007280,160135,110025,161127,159941";
+
+                string url = "https://api.doctorxiong.club/v1/fund?code=" + fundcode;
+                FundRetComm response = HttpClientHelper.GetResponse<FundRetComm>(url);
+                if (response.data != null)
+                {
+                    var data = response.data;
+                    foreach (var d in data)
+                    {
+                        var dd = _repo.GetByCode(d.code);
+                        Myfund obj = new Myfund()
+                        {
+                            Id = dd.Id,
+                            Code = d.code,
+                            Name = d.name,
+                            Daygrowth = d.dayGrowth,
+                            Networth = d.netWorth,
+                            Totalworth = d.totalWorth,
+                            Updatetime = DateTime.Now,
+                            Worthdate = d.worthDate
+                        };
+                        await _repo.Update(obj);
+                    }
+                }
+                ret.data = response;
+                ret.code = Code.Success;
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                ret.code = Code.Failure;
+                ret.msg = ex.Message;
+                return ret;
+            }
+        }
+
+        public async Task<ApiResult> GetPageList(MyfundParm parm)
+        {
+            ApiResult ret = new ApiResult();
+            try
+            {
+                parm.page = 1;
+                parm.rows = 1000;
+                var data = await _repo.GetPageList(parm);
+                ret.code = Code.Success;
+                ret.data = data;
+            }
+            catch (Exception ex)
+            {
+                ret.code = Code.Failure;
+                ret.msg = ex.Message;
+            }
+
+            return ret;
+        }
+
     }
 
     public interface IWorkTaskService
@@ -277,6 +338,8 @@ namespace MSS.Platform.Workflow.WebApi.Service
         Task<WfRet> QueryReadyActivityInstance(WfReq parm);
         Task<WfRet> QueryCompletedTasks(WfReq parm);
         Task<ApiResult> InitData();
+        Task<ApiResult> InitData2();
+        Task<ApiResult> GetPageList(MyfundParm parm);
     }
 
 

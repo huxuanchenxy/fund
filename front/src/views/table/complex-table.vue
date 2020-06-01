@@ -148,6 +148,7 @@
 
 <script>
 import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
+import { fetchList2 } from '@/api/article2'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -233,6 +234,15 @@ export default {
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
+        this.list = response.data.items
+        this.total = response.data.total
+
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
+      fetchList2(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
 

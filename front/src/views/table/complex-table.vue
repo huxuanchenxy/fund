@@ -42,8 +42,7 @@
       </el-table-column>
       <el-table-column label="Code" width="100px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.code }}</span>
-          <!-- <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span> -->
+          <a :href="'http://fund.eastmoney.com/' + row.code +'.html'" target="blank"><span>{{ row.code }}</span></a>
         </template>
       </el-table-column>
       <el-table-column label="Name" prop="name" width="300px" sortable="custom">
@@ -66,6 +65,12 @@
       <el-table-column label="持有收益" prop="balance" width="110px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.percentGrowth }}%</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="今日预估" prop="balance" width="110px" align="center">
+        <template slot-scope="{row}">
+          <span v-if="row.expectGrowth > 0" style="color:#DC143C">{{ row.expectGrowth }}%</span>
+          <span v-if="row.expectGrowth <= 0" style="color:#006400">{{ row.expectGrowth }}%</span>
         </template>
       </el-table-column>
       <!-- <el-table-column v-if="showReviewer" label="Reviewer" width="110px" align="center">

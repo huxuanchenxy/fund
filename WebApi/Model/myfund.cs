@@ -32,6 +32,7 @@ namespace MSS.Platform.Workflow.WebApi.Model
         public System.DateTime Updatetime { get; set; }
         public decimal Percent { get; set; }//持仓比例
         public decimal PercentGrowth { get; set; }//成本收益率
+        public decimal ExpectGrowth { get; set; }//估值涨幅
     }
     public class FundRetComm
     {
@@ -48,6 +49,7 @@ namespace MSS.Platform.Workflow.WebApi.Model
         public decimal totalWorth { get; set; }
         public decimal dayGrowth { get; set; }
         public DateTime worthDate { get; set; }
+        public decimal expectGrowth { get; set; }
     }
 
     public class MyfundMap : EntityMap<Myfund>

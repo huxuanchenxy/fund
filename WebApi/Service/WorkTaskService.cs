@@ -311,6 +311,12 @@ namespace MSS.Platform.Workflow.WebApi.Service
                 parm.page = 1;
                 parm.rows = 1000;
                 var data = await _repo.GetPageList(parm);
+                var d2 = await _repo.GetAllBalance();
+                foreach (var d in data.rows)
+                {
+                    d.Percent = Math.Round(d.Balance / d2.Balance * 100, 2);
+                    d.PercentGrowth = d.Costavg > 0 ? Math.Round((d.Networth - d.Costavg) / d.Costavg * 100, 2) : 0;
+                }
                 ret.code = Code.Success;
                 ret.data = data;
             }

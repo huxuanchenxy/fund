@@ -53,9 +53,19 @@
           <!-- <el-tag>{{ row.type | typeFilter }}</el-tag> -->
         </template>
       </el-table-column>
-      <el-table-column label="Balance" prop="balance" width="110px" align="center" sortable="custom">
+      <el-table-column label="余额" prop="balance" width="110px" align="center" sortable="custom">
         <template slot-scope="{row}">
           <span>{{ row.balance }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="持仓比例" prop="balance" width="110px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.percent }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="持有收益" prop="balance" width="110px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.percentGrowth }}</span>
         </template>
       </el-table-column>
       <!-- <el-table-column v-if="showReviewer" label="Reviewer" width="110px" align="center">

@@ -30,6 +30,8 @@ namespace MSS.Platform.Workflow.WebApi.Model
         public System.DateTime Worthdate { get; set; }
         public decimal Daygrowth { get; set; }
         public System.DateTime Updatetime { get; set; }
+        public decimal Percent { get; set; }//持仓比例
+        public decimal PercentGrowth { get; set; }//成本收益率
     }
     public class FundRetComm
     {

@@ -18,6 +18,7 @@ namespace MSS.Platform.Workflow.WebApi.Data
         Task<int> Update2(Myfund obj);
         Task<MyfundPageView> GetPageList(MyfundParm parm);
         Task<Myfund> GetById(int id);
+        Task<Myfund> GetAllBalance();
     }
 
     public class WorkTaskRepo : BaseRepo, IWorkTaskRepo<TaskViewModel>
@@ -348,6 +349,16 @@ namespace MSS.Platform.Workflow.WebApi.Data
             {
                 var result = await c.QueryFirstOrDefaultAsync<Myfund>(
                     "SELECT * FROM myfund WHERE id = @id", new { id = id });
+                return result;
+            });
+        }
+
+        public async Task<Myfund> GetAllBalance()
+        {
+            return await WithConnection(async c =>
+            {
+                var result = await c.QueryFirstOrDefaultAsync<Myfund>(
+                    "SELECT SUM(balance) balance FROM myfund");
                 return result;
             });
         }

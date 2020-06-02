@@ -320,20 +320,20 @@ namespace MSS.Platform.Workflow.WebApi.Service
                     d.Percent = Math.Round(d.Balance / d2.Balance * 100, 2);
                     d.PercentGrowth = d.Costavg > 0 ? Math.Round((d.Networth - d.Costavg) / d.Costavg * 100, 2) : 0;
                 }
-                string url = "https://api.doctorxiong.club/v1/fund?code=" + codes;
-                FundRetComm response = HttpClientHelper.GetResponse<FundRetComm>(url);
-                foreach (var d in data.rows)
-                {
-                    if (response.data != null)
-                    {
-                        var cur = response.data.Where(c => c.code == d.Code).FirstOrDefault();
-                        if (cur != null)
-                        {
-                            d.ExpectGrowth = cur.expectGrowth;
-                        }
+                //string url = "https://api.doctorxiong.club/v1/fund?code=" + codes;
+                //FundRetComm response = HttpClientHelper.GetResponse<FundRetComm>(url);
+                //foreach (var d in data.rows)
+                //{
+                //    if (response.data != null)
+                //    {
+                //        var cur = response.data.Where(c => c.code == d.Code).FirstOrDefault();
+                //        if (cur != null)
+                //        {
+                //            d.ExpectGrowth = cur.expectGrowth;
+                //        }
                         
-                    }
-                }
+                //    }
+                //}
                     
                 ret.code = Code.Success;
                 ret.data = data;

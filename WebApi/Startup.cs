@@ -10,6 +10,9 @@ using MSS.Platform.Workflow.WebApi.Infrastructure;
 using MSS.Common.Consul;
 using static MSS.API.Common.Const;
 using Microsoft.Extensions.Options;
+using Quartz;
+using Quartz.Impl;
+using Quartz.Spi;
 
 namespace MSS.Platform.Workflow.WebApi
 {
@@ -73,6 +76,11 @@ namespace MSS.Platform.Workflow.WebApi
             //    c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Title = "MyAuthor API", Version = "v1" });
             //});
             //services.AddConsulService(Configuration);
+            
+            services.AddSingleton<FundJob>();
+            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+            services.AddSingleton<QuartzStart>();
+            services.AddSingleton<IJobFactory, IOCJobFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -107,6 +115,13 @@ builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             //app.RegisterConsul(lifetime, consulService);
             app.UseHttpsRedirection();
             app.UseMvc();
+            var quartz = app.ApplicationServices.GetRequiredService<QuartzStart>();
+            lifetime.ApplicationStarted.Register(() => {
+                quartz.Start().Wait();
+            });
+            lifetime.ApplicationStopped.Register(() => {
+                quartz.Stop();
+            });
         }
 
     }

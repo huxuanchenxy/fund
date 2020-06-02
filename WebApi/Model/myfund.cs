@@ -66,6 +66,7 @@ namespace MSS.Platform.Workflow.WebApi.Model
             Map(o => o.Worthdate).ToColumn("worthdate");
             Map(o => o.Daygrowth).ToColumn("daygrowth");
             Map(o => o.Updatetime).ToColumn("updatetime");
+            Map(o => o.ExpectGrowth).ToColumn("expectgrowth");
         }
     }
 

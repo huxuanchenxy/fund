@@ -2,6 +2,7 @@
 using MSS.API.Common;
 using MSS.Platform.Workflow.WebApi.Model;
 using MSS.Platform.Workflow.WebApi.Service;
+using Quartz;
 using System.Threading.Tasks;
 
 namespace MSS.Platform.Workflow.WebApi.Controllers
@@ -10,10 +11,14 @@ namespace MSS.Platform.Workflow.WebApi.Controllers
     [ApiController]
     public class WfController : ControllerBase
     {
+        private readonly ISchedulerFactory _schedulerFactory;
+        private IScheduler _scheduler;
+
         private readonly IWorkTaskService _service;
-        public WfController(IWorkTaskService service)
+        public WfController(IWorkTaskService service, ISchedulerFactory schedulerFactory)
         {
             _service = service;
+            this._schedulerFactory = schedulerFactory;
         }
 
         [HttpGet("QueryReadyTasks")]
@@ -356,6 +361,26 @@ namespace MSS.Platform.Workflow.WebApi.Controllers
                     ex.Message);
             }
             return ret;
+        }
+
+        [HttpGet("FundJob")]
+        public async Task<string[]> FundJob()
+        {
+            //1、通过调度工厂获得调度器
+            _scheduler = await _schedulerFactory.GetScheduler();
+            //2、开启调度器
+            await _scheduler.Start();
+            //3、创建一个触发器
+            var trigger = TriggerBuilder.Create()
+                            .WithSimpleSchedule(x => x.WithIntervalInSeconds(3).RepeatForever())//每两秒执行一次
+                            .Build();
+            //4、创建任务
+            var jobDetail = JobBuilder.Create<FundJob>()
+                            .WithIdentity("job", "group")
+                            .Build();
+            //5、将触发器和任务器绑定到调度器中
+            await _scheduler.ScheduleJob(jobDetail, trigger);
+            return await Task.FromResult(new string[] { "value1", "value2" });
         }
 
     }

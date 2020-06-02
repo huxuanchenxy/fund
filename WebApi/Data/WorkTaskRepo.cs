@@ -19,6 +19,7 @@ namespace MSS.Platform.Workflow.WebApi.Data
         Task<MyfundPageView> GetPageList(MyfundParm parm);
         Task<Myfund> GetById(int id);
         Task<Myfund> GetAllBalance();
+        Task<int> UpdateExpectGrowth(Myfund obj);
     }
 
     public class WorkTaskRepo : BaseRepo, IWorkTaskRepo<TaskViewModel>
@@ -328,6 +329,17 @@ namespace MSS.Platform.Workflow.WebApi.Data
                     balance=@Balance,
                     costavg=@Costavg,
                     updatetime=@Updatetime
+                 where id=@Id", obj);
+                return result;
+            });
+        }
+
+        public async Task<int> UpdateExpectGrowth(Myfund obj)
+        {
+            return await WithConnection(async c =>
+            {
+                var result = await c.ExecuteAsync($@" UPDATE myfund set 
+                    expectgrowth=@ExpectGrowth
                  where id=@Id", obj);
                 return result;
             });

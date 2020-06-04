@@ -95,7 +95,7 @@
         <template slot-scope="{row}">
           <!-- <span v-if="row.pageviews" class="link-type" @click="handleFetchPv(row.pageviews)">{{ row.pageviews }}</span>
           <span v-else>0</span> -->
-          <span>{{ row.daygrowth }}</span>
+          <span>{{ row.daygrowth }}%</span>
         </template>
       </el-table-column>
       <el-table-column label="最新净值时间" align="center" width="95">

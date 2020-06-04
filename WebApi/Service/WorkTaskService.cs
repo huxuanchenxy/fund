@@ -277,7 +277,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
                     var data = response.data;
                     foreach (var d in data)
                     {
-                        var dd = _repo.GetByCode(d.code);
+                        var dd = await _repo.GetByCode(d.code);
                         Myfund obj = new Myfund()
                         {
                             Id = dd.Id,

@@ -20,6 +20,7 @@ namespace MSS.Platform.Workflow.WebApi.Model
 
     public class Myfund : BaseEntity
     {
+        public int Num { get; set; }
         public int Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }

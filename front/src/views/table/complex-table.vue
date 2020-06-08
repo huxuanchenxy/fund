@@ -35,6 +35,11 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
+      <el-table-column label="序号" prop="num" width="110px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.num }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
@@ -262,7 +267,7 @@ export default {
     }
   },
   created() {
-    this.getList('id', 'asc')
+    this.getList('balance', 'desc')
   },
   methods: {
     getList(sort, order) {

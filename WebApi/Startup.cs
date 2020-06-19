@@ -116,10 +116,12 @@ builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseHttpsRedirection();
             app.UseMvc();
             //var quartz = app.ApplicationServices.GetRequiredService<QuartzStart>();
-            //lifetime.ApplicationStarted.Register(() => {
+            //lifetime.ApplicationStarted.Register(() =>
+            //{
             //    quartz.Start().Wait();
             //});
-            //lifetime.ApplicationStopped.Register(() => {
+            //lifetime.ApplicationStopped.Register(() =>
+            //{
             //    quartz.Stop();
             //});
         }

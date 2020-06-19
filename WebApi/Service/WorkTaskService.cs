@@ -270,22 +270,67 @@ namespace MSS.Platform.Workflow.WebApi.Service
                 //从天天基金网站上拔取
                 //string fundcode = "001838,165513,008889,006031,008087,007574,519191,004854,519981,096001,206011,165520,040048,180003,161130,001092,118002,007824,000822,519171,164819,004317,008121,162411,161036,002938,002251,501012,003359,000995,005457,260109,160638,160630,502023,001230,006676,213008,165525,168204,168203,001628,161725,164908,161129,160141,160216,160222,050018,050024,002982,000179,003634,070001,160723,007216,160631,003194,163208,167301,539003,001552,001210,740001,005478,006105,200010,006128,006197,002345,519185,519196,161819,005033,005037,001261,006439,006438,160516,270042,450002,160218,160221,006817,001723,007164,519170,164824,164825,164402,161724,001404,161720,080002,350002,006282,006250,378546,005052,007280,160135,110025,161127,159941";
                 string fundcode = string.Empty;
-                var dbdata = await _repo.GetPageList(new MyfundParm() { page = 1,rows = 1000, sort = "id", order = "asc"});
-                foreach (var d1 in dbdata.rows)
+                //string fundcode2 = string.Empty;
+                var dbdata = await _repo.GetPageList(new MyfundParm() { page = 1, rows = 1000, sort = "id", order = "asc" });
+                int i = 0;
+                //foreach (var d1 in dbdata.rows)
+                //{
+                //    if (d1.Balance != 0)
+                //    {
+                //        if (i % 2 == 0)
+                //        {
+                //            fundcode += d1.Code + ",";
+                //        }
+                //        else
+                //        {
+                //            fundcode2 += d1.Code + ",";
+                //        }
+                //        i++;
+
+                //    }
+
+                //}
+                //string url = "https://api.doctorxiong.club/v1/fund?code=" + fundcode;
+                //FundRetComm response = HttpClientHelper.GetResponse<FundRetComm>(url);
+                //if (response.data != null)
+                //{
+                //    var data = response.data;
+                //    foreach (var d in data)
+                //    {
+                //        var dd = await _repo.GetByCode(d.code);
+                //        Myfund obj = new Myfund()
+                //        {
+                //            Id = dd.Id,
+                //            Code = d.code,
+                //            Name = d.name,
+                //            Daygrowth = d.dayGrowth,
+                //            Networth = d.netWorth,
+                //            Totalworth = d.totalWorth,
+                //            Updatetime = DateTime.Now,
+                //            Worthdate = d.worthDate
+                //        };
+                //        await _repo.Update(obj);
+                //    }
+                //}
+
+                //string url2 = "https://api.doctorxiong.club/v1/fund?code=" + fundcode2;
+                //string url2 = $@"https://api.doctorxiong.club/v1/fund?code=008889,007574,519981,206011,118002,000822,164819,008121,161036,501012,000995,260109,160630,006676,165525,168203,161725,161129,160216,050018,002982,003634,160723,160631,163208,539003,001210,005478,200010,006197,519185,161819,005037,006439,160516,450002,160221,001723,519170,164825,161724,161720,350002,006250,005052,160135,161127,";
+                //string[] url2arr = fundcode2.Split(",");
+
+
+
+
+                var data = dbdata.rows;
+                foreach (var d1 in data)
                 {
-                    fundcode += d1.Code + ",";
-                }
-                string url = "https://api.doctorxiong.club/v1/fund?code=" + fundcode;
-                FundRetComm response = HttpClientHelper.GetResponse<FundRetComm>(url);
-                if (response.data != null)
-                {
-                    var data = response.data;
-                    foreach (var d in data)
+                    string url2 = "https://api.doctorxiong.club/v1/fund?code=" + d1.Code;
+                    FundRetComm ret2 = HttpClientHelper.GetResponse<FundRetComm>(url2);
+                    if (ret2.data != null)
                     {
-                        var dd = await _repo.GetByCode(d.code);
+                        var d = ret2.data[0];
                         Myfund obj = new Myfund()
                         {
-                            Id = dd.Id,
+                            Id = d1.Id,
                             Code = d.code,
                             Name = d.name,
                             Daygrowth = d.dayGrowth,
@@ -297,7 +342,10 @@ namespace MSS.Platform.Workflow.WebApi.Service
                         await _repo.Update(obj);
                     }
                 }
-                ret.data = response;
+
+
+
+                ret.data = null;
                 ret.code = Code.Success;
                 return ret;
             }

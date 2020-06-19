@@ -29,22 +29,33 @@ namespace MSS.Platform.Workflow.WebApi.Service
                 string codes = string.Empty;
                 MyfundParm parm = new MyfundParm() { page = 1, rows = 1000, sort = "id", order = "asc" };
                 var data = _repo.GetPageList(parm).Result;
+                //foreach (var d in data.rows)
+                //{
+                //    codes += d.Code + ",";
+                //}
+                //string url = "https://api.doctorxiong.club/v1/fund?code=" + codes;
+                //FundRetComm response = HttpClientHelper.GetResponse<FundRetComm>(url);
                 foreach (var d in data.rows)
                 {
-                    codes += d.Code + ",";
-                }
-                string url = "https://api.doctorxiong.club/v1/fund?code=" + codes;
-                FundRetComm response = HttpClientHelper.GetResponse<FundRetComm>(url);
-                foreach (var d in data.rows)
-                {
-                    if (response.data != null)
+                    try
                     {
-                        var cur = response.data.Where(c => c.code == d.Code).FirstOrDefault();
-                        if (cur != null)
+                        string url = "https://api.doctorxiong.club/v1/fund?code=" + d.Code;
+                        FundRetComm response = HttpClientHelper.GetResponse<FundRetComm>(url);
+                        if (response.data != null)
                         {
-                            _repo.UpdateExpectGrowth(new Myfund() { Id = d.Id, ExpectGrowth = cur.expectGrowth });
+                            var cur = response.data.Where(c => c.code == d.Code).FirstOrDefault();
+                            if (cur != null)
+                            {
+                                _repo.UpdateExpectGrowth(new Myfund() { Id = d.Id, ExpectGrowth = cur.expectGrowth });
+                            }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                    }
+
+                    
                 }
             });
         }

@@ -1,0 +1,11 @@
+https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?callback=jQuery311007652653296044476_1592528850550&FCODE=163208&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=1592528850554
+
+
+https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?callback=jQuery311007652653296044476_1592528850550&FCODE=160723&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=1592528850554
+
+
+https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?callback=jQuery31105701757873192861_1592530082393&FCODE=003194&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=1592530082397
+
+https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?FCODE=003194&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=1592530082397
+
+https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?FCODE=004752&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=1592530082397

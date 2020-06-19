@@ -357,6 +357,60 @@ namespace MSS.Platform.Workflow.WebApi.Service
             }
         }
 
+        public async Task<ApiResult> InitData2V2()
+        {
+            ApiResult ret = new ApiResult();
+            try
+            {
+                
+                string fundcode = string.Empty;
+                var dbdata = await _repo.GetPageList(new MyfundParm() { page = 1, rows = 1000, sort = "id", order = "asc" });
+                
+                var data = dbdata.rows;
+                foreach (var d1 in data)
+                {
+                    try
+                    {
+
+                        string url = $@"https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?FCODE=" + d1.Code + "&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=" + DateTime.Now.Ticks;
+                        Root ret2 = HttpClientHelper.GetResponse<Root>(url);
+                        if (ret2.ErrCode == 0)
+                        {
+                            var d = ret2.Datas;
+                            Myfund obj = new Myfund()
+                            {
+                                Id = d1.Id,
+                                Code = d1.Code,
+                                Name = d1.Name,
+                                Daygrowth = decimal.Parse(d.RZDF),
+                                Networth = decimal.Parse(d.DWJZ),
+                                Totalworth = decimal.Parse(d.LJJZ),
+                                Updatetime = DateTime.Now,
+                                Worthdate = Convert.ToDateTime(d.FSRQ)
+                            };
+                            await _repo.Update(obj);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        string strex = ex.ToString();
+                    }
+                }
+
+
+
+                ret.data = null;
+                ret.code = Code.Success;
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                ret.code = Code.Failure;
+                ret.msg = ex.Message;
+                return ret;
+            }
+        }
+
         public async Task<ApiResult> GetPageList(MyfundParm parm)
         {
             ApiResult ret = new ApiResult();
@@ -469,6 +523,45 @@ namespace MSS.Platform.Workflow.WebApi.Service
             return ret;
         }
 
+        public async Task<ApiResult> UpdateNewBalanceV2()
+        {
+            ApiResult ret = new ApiResult();
+            try
+            {
+                var data = await _repo.GetPageList(new MyfundParm() { page = 1, rows = 1000, order = "asc", sort = "id" });
+                foreach (var d in data.rows)
+                {
+                    try
+                    {
+                        string url = $@"https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?FCODE=" + d.Code + "&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=" + DateTime.Now.Ticks;
+                        Root response = HttpClientHelper.GetResponse<Root>(url);
+                        if (response.ErrCode == 0)
+                        {
+                            var cur = response.Datas;
+                            if (d.Worthdate < Convert.ToDateTime(cur.FSRQ) && cur.RZDF != "0")//如果接口来的最新时间比db新，则更新最新balance
+                            {
+                                var newbalance = d.Balance * decimal.Parse(cur.RZDF) / 100 + d.Balance;
+                                await _repo.Update2(new Myfund() { Id = d.Id, Balance = newbalance, Costavg = d.Costavg });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        string exstr = ex.ToString();
+                    }
+                    
+                }
+                ret.code = Code.Success;
+            }
+            catch (Exception ex)
+            {
+                ret.code = Code.Failure;
+                ret.msg = ex.Message;
+            }
+
+            return ret;
+        }
+
     }
 
     public interface IWorkTaskService
@@ -493,6 +586,8 @@ namespace MSS.Platform.Workflow.WebApi.Service
         Task<ApiResult> Update2(Myfund obj);
         Task<ApiResult> GetById(int id);
         Task<ApiResult> UpdateNewBalance();
+        Task<ApiResult> UpdateNewBalanceV2();
+        Task<ApiResult> InitData2V2();
     }
 
 

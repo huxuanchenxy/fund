@@ -282,7 +282,7 @@ namespace MSS.Platform.Workflow.WebApi.Controllers
             ApiResult ret = new ApiResult();
             try
             {
-                ret = await _service.InitData2();
+                ret = await _service.InitData2V2();
             }
             catch (System.Exception ex)
             {
@@ -333,7 +333,7 @@ namespace MSS.Platform.Workflow.WebApi.Controllers
             ApiResult ret = new ApiResult { code = Code.Failure };
             try
             {
-                ret = await _service.UpdateNewBalance();
+                ret = await _service.UpdateNewBalanceV2();
 
             }
             catch (System.Exception ex)

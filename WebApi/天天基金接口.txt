@@ -9,3 +9,9 @@ https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?callback=
 https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?FCODE=003194&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=1592530082397
 
 https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?FCODE=004752&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=1592530082397
+
+
+ÊµÊ±£º
+https://fundmobapi.eastmoney.com/FundMApi/FundValuationDetail.ashx?callback=jQuery311012947932735906376_1592535832471&FCODE=005033&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=1592535832472
+
+https://fundmobapi.eastmoney.com/FundMApi/FundVarietieValuationDetail.ashx?callback=jQuery311012947932735906376_1592535832467&FCODE=005033&RANGE=y&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=1592535832468

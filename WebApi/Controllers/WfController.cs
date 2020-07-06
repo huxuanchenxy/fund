@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using MSS.API.Common;
 using MSS.Platform.Workflow.WebApi.Model;
 using MSS.Platform.Workflow.WebApi.Service;
@@ -13,12 +15,14 @@ namespace MSS.Platform.Workflow.WebApi.Controllers
     {
         private readonly ISchedulerFactory _schedulerFactory;
         private IScheduler _scheduler;
+        private QuartzStart _quart;
 
         private readonly IWorkTaskService _service;
-        public WfController(IWorkTaskService service, ISchedulerFactory schedulerFactory)
+        public WfController(IWorkTaskService service, ISchedulerFactory schedulerFactory, QuartzStart quart)
         {
             _service = service;
             this._schedulerFactory = schedulerFactory;
+            _quart = quart;
         }
 
         [HttpGet("QueryReadyTasks")]
@@ -381,6 +385,22 @@ namespace MSS.Platform.Workflow.WebApi.Controllers
             //5、将触发器和任务器绑定到调度器中
             await _scheduler.ScheduleJob(jobDetail, trigger);
             return await Task.FromResult(new string[] { "value1", "value2" });
+        }
+
+        [HttpGet("StartJob")]
+        public async Task<ActionResult<ApiResult>> StartJob()
+        {
+            ApiResult ret = new ApiResult { code = Code.Success };
+            await _quart.Start();
+            return ret;
+        }
+
+        [HttpGet("StopJob")]
+        public async Task<ActionResult<ApiResult>> StopJob()
+        {
+            ApiResult ret = new ApiResult { code = Code.Success };
+            await _quart.Stop();
+            return ret;
         }
 
     }

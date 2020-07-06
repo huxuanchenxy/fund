@@ -65,8 +65,10 @@ namespace MSS.Platform.Workflow.WebApi.Service
                 await Console.Error.WriteLineAsync(se.ToString());
             }
         }
-        public void Stop()
+        public async Task Stop()
         {
+            IScheduler scheduler = await StdSchedulerFactory.GetDefaultScheduler();
+             await scheduler.Shutdown();
         }
     }
     public class IOCJobFactory : IJobFactory

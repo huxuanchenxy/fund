@@ -372,7 +372,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
                     try
                     {
 
-                        string url = $@"https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?FCODE=" + d1.Code + "&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=" + DateTime.Now.Ticks;
+                        string url = $@"https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?FCODE=" + d1.Code + "&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=" + MathHelper.GetTimeStamp();
                         Root ret2 = HttpClientHelper.GetResponse<Root>(url);
                         if (ret2.ErrCode == 0)
                         {
@@ -533,7 +533,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
                 {
                     try
                     {
-                        string url = $@"https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?FCODE=" + d.Code + "&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=" + DateTime.Now.Ticks;
+                        string url = $@"https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?FCODE=" + d.Code + "&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=" + MathHelper.GetTimeStamp();
                         Root response = HttpClientHelper.GetResponse<Root>(url);
                         if (response.ErrCode == 0)
                         {

@@ -41,14 +41,18 @@ namespace MSS.Platform.Workflow.WebApi.Service
                     {
                         //string url = "https://api.doctorxiong.club/v1/fund?code=" + d.Code;
                         //FundRetComm response = HttpClientHelper.GetResponse<FundRetComm>(url);
-                        string url = $@"https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.ashx?FCODE=" + d.Code + "&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=" + MathHelper.GetTimeStamp();
-                        Root response = HttpClientHelper.GetResponse<Root>(url);
+                        string url = $@"https://fundmobapi.eastmoney.com/FundMApi/FundValuationDetail.ashx?FCODE=" + d.Code + "&deviceid=Wap&plat=Wap&product=EFund&version=2.0.0&Uid=9572315881384690&_=" + MathHelper.GetTimeStamp();
+                        Root2 response = HttpClientHelper.GetResponse<Root2>(url);
                         if (response.ErrCode == 0)
                         {
-                            var cur = response.Datas;
+                            var cur = response.Datas[0];
                             if (cur != null)
                             {
-                                _repo.UpdateExpectGrowth(new Myfund() { Id = d.Id, ExpectGrowth = cur.expectGrowth });
+                                if (!string.IsNullOrEmpty(cur.gszzl))
+                                {
+                                    _repo.UpdateExpectGrowth(new Myfund() { Id = d.Id, ExpectGrowth = decimal.Parse(cur.gszzl) });
+                                }
+
                             }
                         }
                     }
@@ -57,7 +61,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
                         Console.WriteLine(ex.ToString());
                     }
 
-                    
+
                 }
             });
         }

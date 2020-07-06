@@ -40,7 +40,7 @@ namespace MSS.Platform.Workflow.WebApi.Data
                 costavg,
                 networth,
                 totalworth,
-                worthdate,
+                worthdate,expectgrowth,
                 daygrowth,updatetime FROM myfund
                  ");
                 StringBuilder whereSql = new StringBuilder();

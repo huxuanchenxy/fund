@@ -246,6 +246,57 @@ namespace MSS.Platform.Workflow.WebApi.Model
 
     }
 
+    public class DatasItem
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public string fundcode { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string dwjz { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string gsz { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string gszzl { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string gszze { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string gztime { get; set; }
+    }
+
+    public class Root2
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<DatasItem> Datas { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int ErrCode { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string ErrMsg { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int TotalCount { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Expansion { get; set; }
+    }
     public class Root
     {
         /// <summary>

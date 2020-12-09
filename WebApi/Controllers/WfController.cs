@@ -5,6 +5,7 @@ using MSS.API.Common;
 using MSS.Platform.Workflow.WebApi.Model;
 using MSS.Platform.Workflow.WebApi.Service;
 using Quartz;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MSS.Platform.Workflow.WebApi.Controllers
@@ -271,7 +272,7 @@ namespace MSS.Platform.Workflow.WebApi.Controllers
             }
             catch (System.Exception ex)
             {
-                
+
             }
             return ret;
         }
@@ -401,6 +402,13 @@ namespace MSS.Platform.Workflow.WebApi.Controllers
             ApiResult ret = new ApiResult { code = Code.Success };
             await _quart.Stop();
             return ret;
+        }
+
+        [HttpGet("Algorithm")]
+        public async Task<ActionResult<ApiResult>> Algorithm2(string s)
+        {
+            ApiResult reponse = await _service.Algorithm(s);
+            return reponse;
         }
 
     }

@@ -362,10 +362,10 @@ namespace MSS.Platform.Workflow.WebApi.Service
             ApiResult ret = new ApiResult();
             try
             {
-                
+
                 string fundcode = string.Empty;
                 var dbdata = await _repo.GetPageList(new MyfundParm() { page = 1, rows = 1000, sort = "id", order = "asc" });
-                
+
                 var data = dbdata.rows;
                 foreach (var d1 in data)
                 {
@@ -549,7 +549,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
                     {
                         string exstr = ex.ToString();
                     }
-                    
+
                 }
                 ret.code = Code.Success;
             }
@@ -562,10 +562,82 @@ namespace MSS.Platform.Workflow.WebApi.Service
             return ret;
         }
 
+        public async Task<ApiResult> Algorithm(string s)
+        {
+            ApiResult ret = new ApiResult();
+            try
+            {
+                char[] x = { 'a', 'b', 'c', 'd' };
+                //ReverseString(x);
+                reverseStringHelper(x, 0, x.Length - 1);
+                ret.code = Code.Success;
+                //ret.data = data;
+            }
+            catch (Exception ex)
+            {
+                ret.code = Code.Failure;
+                ret.msg = ex.Message;
+            }
+
+            return ret;
+        }
+
+        private bool IsValid(string s)
+        {
+            Stack<char> st = new Stack<char>();
+            Dictionary<char, char> dict = new Dictionary<char, char>() { { ')', '(' }, { '}', '{' }, { ']', '[' } };
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (dict.ContainsValue(s[i]))
+                {
+                    st.Push(s[i]);//凡是左括号的就直接入栈
+                }
+                else if (st.Count() == 0)
+                {
+                    return false;//如果第一个入的是右括号，则直接返回false,说明右括号不能在左括号之前出现
+                }
+                else if (dict[s[i]] != st.Pop())
+                {
+                    return false;//如果当前准备入栈的右括号先去通过dic匹配他的左括号和已经在栈里的第一个比较，如果不相等说明没有匹配成功
+                }
+            }
+            return st.Count == 0;//如果栈为空，括号全部配对完，返回true
+        }
+
+        public void ReverseString(char[] s)
+        {
+            int n = s.Length;
+            int middle = n / 2;
+            for (int i = 0; i < middle;)
+            {
+                char m = s[i];
+                s[i] = s[n - 1];
+                s[n - 1] = m;
+                i++;
+                n--;
+            }
+        }
+
+        public void reverseStringHelper(char[] s, int left, int right)
+        {
+            if (left >= right)
+                return;
+            swap(s, left, right);
+            reverseStringHelper(s, ++left, --right);
+        }
+
+        private void swap(char[] array, int i, int j)
+        {
+            char temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+
     }
 
     public interface IWorkTaskService
     {
+        Task<ApiResult> Algorithm(string s);
         Task<ApiResult> GetReadyTasks(WorkTaskQueryParm parm);
         Task<ApiResult> GetFinishTasks(WorkTaskQueryParm parm);
         Task<ApiResult> GetPageMyApply(WorkTaskQueryParm parm);

@@ -567,9 +567,14 @@ namespace MSS.Platform.Workflow.WebApi.Service
             ApiResult ret = new ApiResult();
             try
             {
-                char[] x = { 'a', 'b', 'c', 'd' };
-                //ReverseString(x);
-                reverseStringHelper(x, 0, x.Length - 1);
+                //string i1 = ConvertToString(l1);
+                //string i2 = ConvertToString(l2);
+                //long rettmp = long.Parse("342") + long.Parse("465");
+                string s1 = "9,9,9,9";
+                ListNode l1 = ConvertToNode(s1.Split(','));
+                string s2 = "9";
+                ListNode l2 = ConvertToNode(s2.Split(','));
+                ret.data = AddTwoNumsV2(l1, l2);
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -579,6 +584,123 @@ namespace MSS.Platform.Workflow.WebApi.Service
                 ret.msg = ex.Message;
             }
 
+            return ret;
+        }
+
+        /// <summary>
+        /// 数组转链表
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
+        private ListNode ConvertToNode(string[] arr)
+        {
+            ListNode nodes = new ListNode() { val = int.Parse(arr[0]) };
+            ListNode p = nodes;
+            for (int i = 1; i < arr.Length; i++)
+            {
+                p.next = new ListNode() { val = int.Parse(arr[i]) };
+                p = p.next;
+            }
+            return nodes;
+        }
+
+        private string ConvertToString(ListNode nodes)
+        {
+            string ret = string.Empty;
+            if (nodes == null)
+            {
+                return ret;
+            }
+            ListNode p = nodes;
+            while (p != null)
+            {
+                int cur = p.val;
+                ret = cur + ret;
+                p = p.next;
+            }
+            return ret;
+        }
+
+        private string ReverseToString(string n)
+        {
+            string ret = string.Empty;
+            for (int i = 0; i < n.Length; i++)
+            {
+                ret = n[i] + "," + ret;
+            }
+            ret = ret.TrimEnd(',');
+            return ret;
+        }
+
+        private ListNode AddTwoNums(ListNode l1, ListNode l2)
+        {
+            ListNode ret = new ListNode();
+            ListNode p = ret;
+            int carry = 0;//进位
+            while (l1 != null || l2 != null)
+            {
+                int cur1 = l1 != null ? l1.val : 0;
+                int cur2 = l2 != null ? l2.val : 0;
+                int curtmp = cur1 + cur2;//当前应该加起来等于几
+                int cur = curtmp % 10 + carry;//当前个位数
+                if (curtmp / 10 > 0)
+                {
+                    carry++;
+                }
+                else
+                {
+                    carry = 0;
+                }
+                p.val = cur;
+                p.next = new ListNode();
+                p = p.next;
+                l1 = l1.next;
+                l2 = l2.next;
+            }
+            return ret;
+        }
+
+        private ListNode AddTwoNumsV2(ListNode l1, ListNode l2)
+        {
+            ListNode ret = new ListNode();
+            ListNode p = ret;
+            int carry = 0;//进位
+            while (l1 != null || l2 != null)
+            {
+                int cur1 = l1 != null ? l1.val : 0;
+                int cur2 = l2 != null ? l2.val : 0;
+                int curtmp = cur1 + cur2;//当前应该加起来等于几
+                int cur = (curtmp + p.val) % 10;//当前个位数
+                if ((curtmp + p.val) / 10 > 0)
+                {
+                    carry = 1;
+                }
+                else
+                {
+                    carry = 0;
+                }
+                p.val = cur;
+                if ((l1 != null && l1.next != null) || (l2 != null && l2.next != null))
+                {
+                    p.next = new ListNode() { val = carry };
+                    p = p.next;
+                }
+
+                if (l1 != null) {
+                    l1 = l1.next;
+                }
+                if (l2 != null) {
+                    l2 = l2.next;
+                }
+                if (l1 == null && l2 == null && carry == 1) { 
+                    p.next = new ListNode() { val = 1 };
+                }
+                
+                //if (l1.next == null && l2.next == null)
+                //{
+                //    break;
+                //}
+            }
             return ret;
         }
 
@@ -633,7 +755,83 @@ namespace MSS.Platform.Workflow.WebApi.Service
             array[j] = temp;
         }
 
+        public bool LemonadeChange(int[] bills)
+        {
+            int dic5 = 0;
+            int dic10 = 0;
+            for (int i = 0; i < bills.Length; i++)
+            {
+                if (bills[i] == 5)
+                {
+                    dic5 += 1;
+                }
+                else if (bills[i] == 10)
+                {
+                    if (dic5 > 0)
+                    {
+                        dic10 += 1;
+                        dic5 -= 1;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else if (bills[i] == 20)
+                {
+                    if (dic10 > 0 && dic5 > 0)
+                    {
+                        dic5 -= 1;
+                        dic10 -= 1;
+                    }
+                    else if (dic5 > 2)
+                    {
+                        dic5 = dic5 - 3;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
+            }
+            return true;
+        }
+
+
+        private int getNum(ListNode node)
+        {
+            int number = 0;
+            int deep = 0;
+            int cur = node.val;
+            int curnum = deep * 10;
+            if (curnum != 0)
+            {
+                number += curnum;
+            }
+            else
+            {
+                number = cur;
+            }
+            deep++;
+            getNum(node.next);
+            return number;
+        }
+
     }
+
+
+    public class ListNode
+    {
+        public int val;
+        public ListNode next;
+        public ListNode(int val = 0, ListNode next = null)
+        {
+            this.val = val;
+            this.next = next;
+        }
+    }
+
 
     public interface IWorkTaskService
     {

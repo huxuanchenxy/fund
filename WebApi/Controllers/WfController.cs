@@ -405,9 +405,9 @@ namespace MSS.Platform.Workflow.WebApi.Controllers
         }
 
         [HttpGet("Algorithm")]
-        public async Task<ActionResult<ApiResult>> Algorithm2(string s)
+        public async Task<ActionResult<ApiResult>> Algorithm2(string s,string s1)
         {
-            ApiResult reponse = await _service.Algorithm(s);
+            ApiResult reponse = await _service.Algorithm(s,s1);
             return reponse;
         }
 

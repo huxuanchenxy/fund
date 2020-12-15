@@ -562,19 +562,18 @@ namespace MSS.Platform.Workflow.WebApi.Service
             return ret;
         }
 
-        public async Task<ApiResult> Algorithm(string s)
+        public async Task<ApiResult> Algorithm(string s, string s1)
         {
             ApiResult ret = new ApiResult();
             try
             {
-                //string i1 = ConvertToString(l1);
-                //string i2 = ConvertToString(l2);
-                //long rettmp = long.Parse("342") + long.Parse("465");
-                string s1 = "9,9,9,9";
-                ListNode l1 = ConvertToNode(s1.Split(','));
-                string s2 = "9";
-                ListNode l2 = ConvertToNode(s2.Split(','));
-                ret.data = AddTwoNumsV2(l1, l2);
+                string[] arrtmp = s.Split(',');
+                int[] arr = new int[arrtmp.Length];
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    arr[i] = int.Parse(arrtmp[i]);
+                }
+                ret.data = RemoveElement(arr, int.Parse(s1));
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -632,33 +631,56 @@ namespace MSS.Platform.Workflow.WebApi.Service
             return ret;
         }
 
-        private ListNode AddTwoNums(ListNode l1, ListNode l2)
+        private int RemoveElement(int[] nums, int val)
         {
-            ListNode ret = new ListNode();
-            ListNode p = ret;
-            int carry = 0;//进位
-            while (l1 != null || l2 != null)
+            if (nums.Length == 0)
             {
-                int cur1 = l1 != null ? l1.val : 0;
-                int cur2 = l2 != null ? l2.val : 0;
-                int curtmp = cur1 + cur2;//当前应该加起来等于几
-                int cur = curtmp % 10 + carry;//当前个位数
-                if (curtmp / 10 > 0)
+                return 0;
+            }
+            int length = nums.Length;
+            //int i = 0;
+            int j = 0;
+            while (j < length)
+            {
+                //把后面不是val的提上来
+                if (nums[j] == val)
                 {
-                    carry++;
+                    int havenotval = 0;//记录当前j后面的数字是否有和val不一样的，不一样说明有交换位置的操作
+                    for (int k = j; k < length - 1; k++)
+                    {
+                        if (nums[k + 1] != val)
+                        {
+                            havenotval++;
+                        }
+                        int c = nums[k];
+                        nums[k] = nums[k + 1];
+                        nums[k + 1] = c;
+                    }
+                    j++;
+                    if (nums[j - 1] == val && havenotval != 0)//如果当前交换后的前一个数字仍然是val并且确实交换过，则j回退，说明当前交换后第一个数字还是val，得再次逐个移动后面的数字向前。如果havenotval是0，说明后面的数字全是和val一样的，j不需要做回退操作，任然沿用上面的j++往后移。
+                    {
+                        j--;
+                    }
+                    //if (havenotval != 0)
+                    //{
+                    //    i++;
+                    //}
                 }
                 else
                 {
-                    carry = 0;
+                    j++;//当前快指针如果不等于val则向后移
                 }
-                p.val = cur;
-                p.next = new ListNode();
-                p = p.next;
-                l1 = l1.next;
-                l2 = l2.next;
+            }
+            int ret = length;
+            for (int i = 0; i < nums.Length; i++) {
+                if (nums[i] == val) {
+                    ret--;
+                }
             }
             return ret;
         }
+
+
 
         private ListNode AddTwoNumsV2(ListNode l1, ListNode l2)
         {
@@ -686,16 +708,19 @@ namespace MSS.Platform.Workflow.WebApi.Service
                     p = p.next;
                 }
 
-                if (l1 != null) {
+                if (l1 != null)
+                {
                     l1 = l1.next;
                 }
-                if (l2 != null) {
+                if (l2 != null)
+                {
                     l2 = l2.next;
                 }
-                if (l1 == null && l2 == null && carry == 1) { 
+                if (l1 == null && l2 == null && carry == 1)
+                {
                     p.next = new ListNode() { val = 1 };
                 }
-                
+
                 //if (l1.next == null && l2.next == null)
                 //{
                 //    break;
@@ -835,7 +860,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
 
     public interface IWorkTaskService
     {
-        Task<ApiResult> Algorithm(string s);
+        Task<ApiResult> Algorithm(string s, string s1);
         Task<ApiResult> GetReadyTasks(WorkTaskQueryParm parm);
         Task<ApiResult> GetFinishTasks(WorkTaskQueryParm parm);
         Task<ApiResult> GetPageMyApply(WorkTaskQueryParm parm);

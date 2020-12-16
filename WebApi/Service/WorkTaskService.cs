@@ -568,12 +568,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
             try
             {
                 string[] arrtmp = s.Split(',');
-                int[] arr = new int[arrtmp.Length];
-                for (int i = 0; i < arr.Length; i++)
-                {
-                    arr[i] = int.Parse(arrtmp[i]);
-                }
-                ret.data = RemoveElement(arr, int.Parse(s1));
+                ret.data = LongestCommonPrefix(arrtmp);
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -586,6 +581,56 @@ namespace MSS.Platform.Workflow.WebApi.Service
             return ret;
         }
 
+        /// <summary>
+        /// 最长公共字符前缀
+        /// </summary>
+        /// <param name="strs"></param>
+        /// <returns></returns>
+        public string LongestCommonPrefix(string[] strs)
+        {
+            string ret = string.Empty;
+            if (strs.Length == 0)
+            {
+                return ret;
+            }
+
+            int min = strs[0].Length;
+            //先找出最短字符的长度
+            for (int i = 1; i < strs.Length; i++) {
+                string t = strs[i];
+                if (t.Length < min)
+                {
+                    min = t.Length;
+                }
+            }
+
+            for (int i = 0; i < min; i++) {
+                char curchar = char.MinValue;
+                bool flag = true;
+                for (int j = 0; j < strs.Length; j++) {
+                    string temp = strs[j];
+                    if (j == 0)
+                    {
+                        curchar = temp[i];
+                    }
+                    else
+                    {
+                        if (temp[i] != curchar)
+                        {
+                            flag = false;
+                            break;//该字符位置的字符有不一样的
+                        }
+                    }
+                }
+                if (!flag) {
+                    break;//一旦有端的就全部退出
+                }
+                if (flag) {
+                    ret += curchar;
+                }
+            }
+            return ret;
+        }
         /// <summary>
         /// 数组转链表
         /// </summary>

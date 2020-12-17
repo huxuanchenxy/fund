@@ -567,8 +567,17 @@ namespace MSS.Platform.Workflow.WebApi.Service
             ApiResult ret = new ApiResult();
             try
             {
-                string[] arrtmp = s.Split(',');
-                ret.data = LongestCommonPrefix(arrtmp);
+                char[][] board = new char[9][];
+                board[0] = new char[9] { '.', '.', '.', '.', '5', '.', '.', '1', '.' };
+                board[1] = new char[9] { '.', '4', '.', '3', '.', '.', '.', '.', '.' };
+                board[2] = new char[9] { '.', '.', '.', '.', '.', '3', '.', '.', '1' };
+                board[3] = new char[9] { '8', '.', '.', '.', '.', '.', '.', '2', '.' };
+                board[4] = new char[9] { '.', '.', '2', '.', '7', '.', '.', '.', '.' };
+                board[5] = new char[9] { '.', '1', '5', '.', '.', '.', '.', '.', '.' };
+                board[6] = new char[9] { '.', '.', '.', '.', '.', '2', '.', '.', '.' };
+                board[7] = new char[9] { '.', '2', '.', '9', '.', '.', '.', '.', '.' };
+                board[8] = new char[9] { '.', '.', '4', '.', '.', '.', '.', '.', '.' };
+                ret.data = IsValidSudoku(board);
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -579,6 +588,108 @@ namespace MSS.Platform.Workflow.WebApi.Service
             }
 
             return ret;
+        }
+
+
+        private bool IsValidSudoku(char[][] board)
+        {
+            bool ret = true;
+            //横扫字典
+            Dictionary<int, int> dic1 = new Dictionary<int, int>() { { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, { 7, 0 }, { 8, 0 }, { 9, 0 } };
+            //竖扫字典
+            Dictionary<int, int> dic2 = new Dictionary<int, int>() { { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, { 7, 0 }, { 8, 0 }, { 9, 0 } };
+            //宫扫字典
+            Dictionary<int, int> dic3 = new Dictionary<int, int>() { { 1, 0 }, { 2, 0 }, { 3, 0 }, { 4, 0 }, { 5, 0 }, { 6, 0 }, { 7, 0 }, { 8, 0 }, { 9, 0 } };
+            for (int i = 0; i < 9; i++)
+            {
+                //按宫扫先求下标，每个宫的第一个格的下标
+                // 每个宫的第一个格子是 (036)(036)的9种组合，这个是按宫的外部循环
+                //(0,0)(0,3)(0,6)
+                //(3,0)(3,3)(3,6)
+                //(6,0)(6,3)(6,6)
+                int i1 = i - (i % 3);// 012 345 678 要转化成000 333 666，每个都是差0,1,2
+                int j1 = (i % 3) * 3;// 012 345 678 要转化成036 036 036
+                for (int j = 0; j < 9; j++)
+                {
+                    if (board[i][j] != '.')//横扫描
+                    {
+                        int cur = int.Parse(board[i][j].ToString());
+                        if (dic1[cur] > 0)
+                        {
+                            ret = false;
+                            break;
+                        }
+                        else
+                        {
+                            dic1[cur]++;
+                        }
+                    }
+                    if (board[j][i] != '.')//竖扫描
+                    {
+                        int cur = int.Parse(board[j][i].ToString());
+                        if (dic2[cur] > 0)
+                        {
+                            ret = false;
+                            break;
+                        }
+                        else
+                        {
+                            dic2[cur]++;
+                        }
+                    }
+
+                    int gapi = j / 3;//012 345 678转化成加000 111 222 如(0,3)(0,4)(0,5)(1,3)(1,4)(1,5)(2,3)(2,4)(2,5)
+                    int gapj = j % 3;//012 345 678转化成加012 012 012
+                    int curi = i1 + gapi;
+                    int curj = j1 + gapj;
+                    if (board[curi][curj] != '.')//宫扫描
+                    {
+                        int cur = int.Parse(board[curi][curj].ToString());
+                        if (dic3[cur] > 0)
+                        {
+                            ret = false;
+                            break;
+                        }
+                        else
+                        {
+                            dic3[cur]++;
+                        }
+                    }
+                }
+                //扫完一遍清空字典
+                GetNewDic(dic1);
+                GetNewDic(dic2);
+                GetNewDic(dic3);
+            }
+            return ret;
+        }
+
+        private void GetNewDic(Dictionary<int, int> dic)
+        {
+            for (int i = 1; i <= 9; i++)
+            {
+                dic[i] = 0;
+            }
+        }
+
+        public int StrStr(string haystack, string needle)
+        {
+            int ret = 0;
+            if (string.IsNullOrEmpty(needle))
+            {
+                return ret;
+            }
+            int haylength = haystack.Length;
+            int needlelength = needle.Length;
+            for (int i = 0; i <= haylength - needlelength; i++)
+            {
+                string curchararr = haystack.Substring(i, needlelength);
+                if (curchararr == needle)
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         /// <summary>
@@ -596,7 +707,8 @@ namespace MSS.Platform.Workflow.WebApi.Service
 
             int min = strs[0].Length;
             //先找出最短字符的长度
-            for (int i = 1; i < strs.Length; i++) {
+            for (int i = 1; i < strs.Length; i++)
+            {
                 string t = strs[i];
                 if (t.Length < min)
                 {
@@ -604,10 +716,12 @@ namespace MSS.Platform.Workflow.WebApi.Service
                 }
             }
 
-            for (int i = 0; i < min; i++) {
+            for (int i = 0; i < min; i++)
+            {
                 char curchar = char.MinValue;
                 bool flag = true;
-                for (int j = 0; j < strs.Length; j++) {
+                for (int j = 0; j < strs.Length; j++)
+                {
                     string temp = strs[j];
                     if (j == 0)
                     {
@@ -622,10 +736,12 @@ namespace MSS.Platform.Workflow.WebApi.Service
                         }
                     }
                 }
-                if (!flag) {
+                if (!flag)
+                {
                     break;//一旦有端的就全部退出
                 }
-                if (flag) {
+                if (flag)
+                {
                     ret += curchar;
                 }
             }
@@ -717,8 +833,10 @@ namespace MSS.Platform.Workflow.WebApi.Service
                 }
             }
             int ret = length;
-            for (int i = 0; i < nums.Length; i++) {
-                if (nums[i] == val) {
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (nums[i] == val)
+                {
                     ret--;
                 }
             }

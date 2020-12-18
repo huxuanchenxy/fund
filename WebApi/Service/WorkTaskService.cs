@@ -590,6 +590,29 @@ namespace MSS.Platform.Workflow.WebApi.Service
             return ret;
         }
 
+        /// <summary>
+        /// 异或方法找不同
+        /// 1，位运算解决
+        ///这题说的是字符串t只比s多了一个字符，其他字符他们的数量都是一样的，如果我们把字符串s和t合并就会发现
+        ///，除了那个多出的字符出现奇数次，其他的所有字符都是出现偶数次。
+        /// 一个数和0做XOR运算等于本身：a⊕0 = a
+        /// 一个数和其本身做XOR运算等于 0：a⊕a = 0
+        /// XOR 运算满足交换律和结合律：a⊕b⊕a = (a⊕a)⊕b = 0⊕b = b
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        private char FindTheDifference(string s, string t)
+        {
+            char ret = char.MinValue;
+            char[] arr = (s + t).ToArray();
+            for (int i = 0; i < arr.Length; i++)
+            {
+                ret ^= arr[i];
+            }
+            return ret;
+        }
+
 
         private bool IsValidSudoku(char[][] board)
         {

@@ -567,17 +567,9 @@ namespace MSS.Platform.Workflow.WebApi.Service
             ApiResult ret = new ApiResult();
             try
             {
-                char[][] board = new char[9][];
-                board[0] = new char[9] { '.', '.', '.', '.', '5', '.', '.', '1', '.' };
-                board[1] = new char[9] { '.', '4', '.', '3', '.', '.', '.', '.', '.' };
-                board[2] = new char[9] { '.', '.', '.', '.', '.', '3', '.', '.', '1' };
-                board[3] = new char[9] { '8', '.', '.', '.', '.', '.', '.', '2', '.' };
-                board[4] = new char[9] { '.', '.', '2', '.', '7', '.', '.', '.', '.' };
-                board[5] = new char[9] { '.', '1', '5', '.', '.', '.', '.', '.', '.' };
-                board[6] = new char[9] { '.', '.', '.', '.', '.', '2', '.', '.', '.' };
-                board[7] = new char[9] { '.', '2', '.', '9', '.', '.', '.', '.', '.' };
-                board[8] = new char[9] { '.', '.', '4', '.', '.', '.', '.', '.', '.' };
-                ret.data = IsValidSudoku(board);
+                string[] arr = s.Split(',');
+                ListNode nodes = ConvertToNode(arr);
+                ret.data = DeleteDuplicates(nodes);
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -591,6 +583,32 @@ namespace MSS.Platform.Workflow.WebApi.Service
         }
 
         /// <summary>
+        /// 删除排序链表中的重复元素
+        /// </summary>
+        /// <param name="head"></param>
+        /// <returns></returns>
+        private ListNode DeleteDuplicates(ListNode head)
+        {
+            ListNode p = head;
+            while (p != null)
+            {
+                if (p.next == null)
+                {
+                    break;
+                }
+                int nextval = p.next.val;
+                if (p.val == nextval)
+                {
+                    p.next = p.next.next;
+                }
+                else
+                {
+                    p = p.next;
+                }
+            }
+            return head;
+        }
+        /// <summary>
         /// 异或方法找不同
         /// 1，位运算解决
         ///这题说的是字符串t只比s多了一个字符，其他字符他们的数量都是一样的，如果我们把字符串s和t合并就会发现
@@ -598,6 +616,16 @@ namespace MSS.Platform.Workflow.WebApi.Service
         /// 一个数和0做XOR运算等于本身：a⊕0 = a
         /// 一个数和其本身做XOR运算等于 0：a⊕a = 0
         /// XOR 运算满足交换律和结合律：a⊕b⊕a = (a⊕a)⊕b = 0⊕b = b
+        /// char[][] board = new char[9][];
+        //board[0] = new char[9] { '.', '.', '.', '.', '5', '.', '.', '1', '.' };
+        //board[1] = new char[9] { '.', '4', '.', '3', '.', '.', '.', '.', '.' };
+        //board[2] = new char[9] { '.', '.', '.', '.', '.', '3', '.', '.', '1' };
+        //board[3] = new char[9] { '8', '.', '.', '.', '.', '.', '.', '2', '.' };
+        //board[4] = new char[9] { '.', '.', '2', '.', '7', '.', '.', '.', '.' };
+        //board[5] = new char[9] { '.', '1', '5', '.', '.', '.', '.', '.', '.' };
+        //board[6] = new char[9] { '.', '.', '.', '.', '.', '2', '.', '.', '.' };
+        //board[7] = new char[9] { '.', '2', '.', '9', '.', '.', '.', '.', '.' };
+        //board[8] = new char[9] { '.', '.', '4', '.', '.', '.', '.', '.', '.' };
         /// </summary>
         /// <param name="s"></param>
         /// <param name="t"></param>

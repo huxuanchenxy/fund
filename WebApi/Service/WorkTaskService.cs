@@ -567,9 +567,15 @@ namespace MSS.Platform.Workflow.WebApi.Service
             ApiResult ret = new ApiResult();
             try
             {
-                string[] arr = s.Split(',');
-                ListNode nodes = ConvertToNode(arr);
-                ret.data = DeleteDuplicates(nodes);
+                //TreeNode node = CreateTree();
+                //FirstPrint(node);
+                string[] starr = s.Split(',');
+                int[] arr = new int[starr.Length];
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    arr[i] = int.Parse(starr[i]);
+                }
+                ret.data = PlusOne(arr);
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -582,6 +588,91 @@ namespace MSS.Platform.Workflow.WebApi.Service
             return ret;
         }
 
+        /// <summary>
+        /// 前序打印二叉树
+        /// </summary>
+        /// <param name="tree"></param>
+        private string PreOrder(TreeNode tree) 
+        {
+            string ret = string.Empty;
+            Stack<TreeNode> st = new Stack<TreeNode>();
+            st.Push(tree);
+            while (st.Count != 0)
+            {
+                TreeNode t = st.Pop();
+                ret += t.val + ",";
+                if (t.right != null)
+                {
+                    st.Push(t.right);
+                }
+                if (t.left != null)
+                {
+                    st.Push(t.left);
+                }
+            }
+            return ret;
+        }
+
+        private void FirstPrint(TreeNode node)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            Console.Write(node.val);
+            FirstPrint(node.left);
+            FirstPrint(node.right);
+        }
+
+        private TreeNode CreateTree()
+        {
+            TreeNode nodeA = new TreeNode();
+            nodeA.val = 1;
+            TreeNode nodeB = new TreeNode();
+            nodeB.val = 2;
+            TreeNode nodeC = new TreeNode();
+            nodeC.val = 3;
+            TreeNode nodeD = new TreeNode();
+            nodeD.val = 4;
+            TreeNode nodeE = new TreeNode();
+            nodeE.val = 5;
+            TreeNode nodeF = new TreeNode();
+            nodeF.val = 6;
+
+            nodeB.left = nodeD;
+            nodeB.right = nodeE;
+            nodeC.left = nodeF;
+            nodeA.left = nodeB;
+            nodeA.right = nodeC;
+            return nodeA;
+
+        }
+
+        /// <summary>
+        /// 加一
+        /// </summary>
+        /// <param name="digits"></param>
+        /// <returns></returns>
+        public int[] PlusOne(int[] digits)
+        {
+            int length = digits.Length;
+            for (int i = length - 1; i >= 0; i--)
+            {
+                if (digits[i] != 9)
+                {
+                    digits[i]++;//当前的位置不是9的加1即可
+                    return digits;
+                }
+                else
+                {
+                    digits[i] = 0;//当前是9的肯定变成0，进位不用管
+                }
+            }
+            digits = new int[length + 1];//重新分配一个本来长度+1的int数组，里面全是0，也就这一种情况int数组会加长
+            digits[0] = 1;
+
+            return digits;
+        }
         /// <summary>
         /// 删除排序链表中的重复元素
         /// </summary>
@@ -608,6 +699,19 @@ namespace MSS.Platform.Workflow.WebApi.Service
             }
             return head;
         }
+
+        public ListNode deleteDuplicates2(ListNode head)
+        {
+            if (head == null || head.next == null)
+            {
+                return head;
+            }
+
+            head.next = deleteDuplicates2(head.next);
+
+            return head.val == head.next.val ? head.next : head;
+        }
+
         /// <summary>
         /// 异或方法找不同
         /// 1，位运算解决
@@ -1071,6 +1175,13 @@ namespace MSS.Platform.Workflow.WebApi.Service
         }
     }
 
+    public class TreeNode
+    {
+        public int val;
+        public TreeNode left { get; set; }
+        public TreeNode right { get; set; }
+
+    }
 
     public interface IWorkTaskService
     {

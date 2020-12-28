@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using MSS.API.Common.DistributedEx;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Localization;
 
 namespace MSS.Platform.Workflow.WebApi.Service
 {
@@ -569,13 +570,13 @@ namespace MSS.Platform.Workflow.WebApi.Service
             {
                 //TreeNode node = CreateTree();
                 //FirstPrint(node);
-                string[] starr = s.Split(',');
-                int[] arr = new int[starr.Length];
-                for (int i = 0; i < arr.Length; i++)
-                {
-                    arr[i] = int.Parse(starr[i]);
-                }
-                ret.data = PlusOne(arr);
+                //string[] starr = s.Split(',');
+                //int[] arr = new int[starr.Length];
+                //for (int i = 0; i < arr.Length; i++)
+                //{
+                //    arr[i] = int.Parse(starr[i]);
+                //}
+                ret.data = AddBinary(s,s1);
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -588,11 +589,101 @@ namespace MSS.Platform.Workflow.WebApi.Service
             return ret;
         }
 
+
+        /// <summary>
+        /// 二进制求和
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        private string AddBinary(string a, string b)
+        {
+            string ret = string.Empty;
+            if (a.Length > b.Length)
+            {
+                b = b.PadLeft(a.Length, '0');
+            }
+            if (a.Length < b.Length)
+            {
+                a = a.PadLeft(b.Length, '0');
+            }
+            int carry = 0;
+            for (int i = a.Length - 1; i >= 0; i--)
+            {
+                int curold = (int.Parse(a[i].ToString()) + int.Parse(b[i].ToString()));//当前无脑加起来的和
+                int curnew = (curold + carry);//当前加上上一位的进位新的数字
+                carry = curnew >= 2 ? 1 : 0;//下一位是否进位
+                curnew = curnew % 2;//计算出当前应该是几
+                ret = curnew + ret;//拼接结果
+            }
+            ret = carry == 1 ? 1 + ret : ret;
+
+            return ret;
+        }
+
+        /// <summary>
+        /// https://leetcode-cn.com/problems/maximum-subarray/solution/hua-jie-suan-fa-53-zui-da-zi-xu-he-by-guanpengchn/
+        /// 最大子序和
+        /// 神奇的正数增益
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
+        private int MaxSubArray(int[] nums)
+        {
+            int ret = nums[0];
+            int sum = 0;
+            foreach (var num in nums)
+            {
+                if (sum <= 0)
+                {
+                    sum = num;
+                }
+                else
+                {
+                    sum += num;
+                }
+                ret = Math.Max(ret, sum);
+            }
+            return ret;
+        }
+
+        private int MaxDepth(TreeNode nodes)
+        {
+            if (nodes == null)
+            {
+                return 0;
+            }
+            int deep = 0;
+            Queue<TreeNode> que = new Queue<TreeNode>();
+            que.Enqueue(nodes);
+            while (que.Count != 0)
+            {
+                deep++;
+                int size = que.Count;
+                if (size > 0)
+                {
+                    for (int i = 0; i < size; i++)
+                    {
+                        TreeNode cur = que.Dequeue();
+                        if (cur.left != null)
+                        {
+                            que.Enqueue(cur.left);
+                        }
+                        if (cur.right != null)
+                        {
+                            que.Enqueue(cur.right);
+                        }
+                    }
+                }
+            }
+            return deep;
+        }
+
         /// <summary>
         /// 前序打印二叉树
         /// </summary>
         /// <param name="tree"></param>
-        private string PreOrder(TreeNode tree) 
+        private string PreOrder(TreeNode tree)
         {
             string ret = string.Empty;
             Stack<TreeNode> st = new Stack<TreeNode>();

@@ -576,7 +576,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
                 //{
                 //    arr[i] = int.Parse(starr[i]);
                 //}
-                ret.data = AddBinary(s,s1);
+                //ret.data = TwoSum(arr, int.Parse(s1));
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -589,6 +589,50 @@ namespace MSS.Platform.Workflow.WebApi.Service
             return ret;
         }
 
+
+
+        private int LengthOfLastWord(string s)
+        {
+            int ret = 0;
+            int end = -1;
+            int start = -1;
+            for (int i = s.Length - 1; i >= 0; i--)
+            {
+                if (s[i] == ' ')
+                {
+                    continue;
+                }
+                else
+                {
+                    if (end == -1)
+                    {
+                        end = i;
+                        start = end;
+                        ret = end - start + 1;
+                        if (start -1  == -1)
+                        {
+                            return 1;
+                        }
+                    }
+                    else
+                    {
+                        
+                        if (s[start - 1] == ' ')
+                        {
+                            ret = end - start + 1;
+                            break;
+                        }
+                        else
+                        {
+                            start--;
+                        }
+                        ret = end - start + 1;
+                    }
+                }
+
+            }
+            return ret;
+        }
 
         /// <summary>
         /// 二进制求和

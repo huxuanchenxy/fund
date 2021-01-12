@@ -11,6 +11,7 @@ using MSS.API.Common.DistributedEx;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Localization;
+using System.Text;
 
 namespace MSS.Platform.Workflow.WebApi.Service
 {
@@ -589,7 +590,23 @@ namespace MSS.Platform.Workflow.WebApi.Service
             return ret;
         }
 
-
+        /// <summary>
+        /// 205. 同构字符串 https://leetcode-cn.com/problems/isomorphic-strings/
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        private bool IsIsomorphic(string s, string t)
+        {
+            StringBuilder s1 = new StringBuilder();
+            StringBuilder t1 = new StringBuilder();
+            for (int i = 0; i < s.Length; i++)
+            {
+                s1.Append(s.IndexOf(s[i]));
+                t1.Append(t.IndexOf(t[i]));
+            }
+            return s1.ToString() == t1.ToString();
+        }
 
         private int LengthOfLastWord(string s)
         {

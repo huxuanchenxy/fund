@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Localization;
 using System.Text;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace MSS.Platform.Workflow.WebApi.Service
 {
@@ -572,12 +573,18 @@ namespace MSS.Platform.Workflow.WebApi.Service
                 //TreeNode node = CreateTree();
                 //FirstPrint(node);
                 //string[] starr = s.Split(',');
-                //int[] arr = new int[starr.Length];
-                //for (int i = 0; i < arr.Length; i++)
-                //{
-                //    arr[i] = int.Parse(starr[i]);
-                //}
-                //ret.data = TwoSum(arr, int.Parse(s1));
+                int[] nums1 = new int[s.Length];
+                for (int i = 0; i < s.Length; i++)
+                {
+                    nums1[i] = int.Parse(s[i].ToString());
+                }
+                int[] nums2 = new int[s1.Length];
+                for (int i = 0; i < s1.Length; i++)
+                {
+                    nums2[i] = int.Parse(s1[i].ToString());
+                }
+                //MoveZeroes(arr);
+                ret.data = Intersection(nums1, nums2);
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -588,6 +595,104 @@ namespace MSS.Platform.Workflow.WebApi.Service
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// 349. 两个数组的交集
+        /// </summary>
+        /// <param name="nums1"></param>
+        /// <param name="nums2"></param>
+        /// <returns></returns>
+        private int[] Intersection(int[] nums1, int[] nums2)
+        {
+            HashSet<int> hash = new HashSet<int>();
+            Array.Sort<int>(nums1);
+            Array.Sort<int>(nums2);
+            int i = 0;
+            int j = 0;
+            while (i < nums1.Length && j < nums2.Length)
+            {
+                if (nums1[i] == nums2[j])
+                {
+                    if (!hash.Contains(nums1[i]))
+                    {
+                        hash.Add(nums1[i]);
+                    }
+                    i++;
+                    j++;
+                }
+                else if (nums1[i] < nums2[j])
+                {
+                    i++;
+                }
+                else if (nums1[i] > nums2[j])
+                {
+                    j++;
+                }
+            }
+            int[] ret = new int[hash.Count];
+            int index = 0;
+            foreach(var tmp in hash)
+            {
+                ret[index++] = tmp;
+            }
+            return ret;
+        }
+
+        private bool WordPattern(string pattern, string s)
+        {
+            string[] sArr = s.Split(' ');
+            StringBuilder s1 = new StringBuilder();
+            StringBuilder s2 = new StringBuilder();
+            for (int i = 0; i < pattern.Length; i++)
+            {
+                s1.Append(pattern.IndexOf(pattern[i]));
+                s2.Append(sArr.IndexOf(sArr[i]));
+            }
+            return s1.ToString() == s2.ToString();
+        }
+
+        /// <summary>
+        /// 234. 回文链表
+        /// https://leetcode-cn.com/problems/palindrome-linked-list/solution/di-gui-zhan-deng-3chong-jie-jue-fang-shi-zui-hao-d/
+        /// </summary>
+        /// <param name="head"></param>
+        /// <returns></returns>
+        private bool IsPalindrome(ListNode head)
+        {
+            ListNode tmp = head;
+            Stack<int> st = new Stack<int>();
+            while(tmp != null)
+            {
+                st.Push(tmp.val);
+                tmp = tmp.next;
+            }
+            while (head != null)
+            {
+                if (head.val != st.Pop())
+                {
+                    return false;
+                }
+                head = head.next;
+            }
+            return true;
+        }
+        private bool ContainsNearbyDuplicate(int[] nums, int k)
+        {
+            Queue<int> q = new Queue<int>();
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (q.Contains(nums[i]))
+                {
+                    return true;
+                }
+                q.Enqueue(nums[i]);
+                if (q.Count > k)
+                {
+                    q.Dequeue();
+                }
+            }
+            return false;
         }
 
         /// <summary>

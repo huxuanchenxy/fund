@@ -584,7 +584,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
                     nums2[i] = int.Parse(s1[i].ToString());
                 }
                 //MoveZeroes(arr);
-                ret.data = Intersection(nums1, nums2);
+                ret.data = NextGreaterElement(nums1,nums2);
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -595,6 +595,43 @@ namespace MSS.Platform.Workflow.WebApi.Service
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// 496. 下一个更大元素 I   https://leetcode-cn.com/problems/next-greater-element-i/
+        /// </summary>
+        /// <param name="nums1"></param>
+        /// <param name="nums2"></param>
+        /// <returns></returns>
+        public int[] NextGreaterElement(int[] nums1, int[] nums2)
+        {
+            Dictionary<int, int> dic = new Dictionary<int, int>();
+            Stack<int> st = new Stack<int>();
+            for (int i = 0; i < nums2.Length; i++)
+            {
+                while (st.Count != 0 && nums2[i] > st.Peek())
+                {
+                    dic.Add(st.Pop(),nums2[i]);
+                }
+                st.Push(nums2[i]);
+            }
+            while (st.Count != 0)
+            {
+                dic.Add(st.Pop(), -1);
+            }
+            for (int i = 0; i < nums1.Length; i++)
+            {
+                int cur = dic[nums1[i]];
+                nums1[i] = cur;
+            }
+            return nums1;
+        }
+         
+
+        public bool RepeatedSubstringPattern(string s)
+        {
+            string ss = s + s;
+            return ss.IndexOf(s, 1) != s.Length;
         }
 
         /// <summary>

@@ -572,19 +572,10 @@ namespace MSS.Platform.Workflow.WebApi.Service
             {
                 //TreeNode node = CreateTree();
                 //FirstPrint(node);
-                //string[] starr = s.Split(',');
-                int[] nums1 = new int[s.Length];
-                for (int i = 0; i < s.Length; i++)
-                {
-                    nums1[i] = int.Parse(s[i].ToString());
-                }
-                int[] nums2 = new int[s1.Length];
-                for (int i = 0; i < s1.Length; i++)
-                {
-                    nums2[i] = int.Parse(s1[i].ToString());
-                }
+                string[] string1 = s.Split(',');
+                string[] string2 = s1.Split(',');
                 //MoveZeroes(arr);
-                ret.data = NextGreaterElement(nums1,nums2);
+                ret.data = FindRestaurant(string1, string2);
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -595,6 +586,37 @@ namespace MSS.Platform.Workflow.WebApi.Service
             }
 
             return ret;
+        }
+
+        public string[] FindRestaurant(string[] list1, string[] list2)
+        {
+            List<MyDic> mylist = new List<MyDic>();
+            for (int i = 0; i < list1.Length; i++)
+            {
+                for (int j = 0; j < list2.Length; j++)
+                {
+                    if (list1[i] == list2[j])
+                    {
+                        mylist.Add(new MyDic() { MyKey = i + j, MyString = list1[i] });
+                    }
+                }
+            }
+
+            int curMin = mylist[0].MyKey;
+            List<string> ret = new List<string>();
+            ret.Add(mylist[0].MyString);
+            for (int i = 1; i < mylist.Count; i++)
+            {
+                if (mylist[i].MyKey < curMin)
+                {
+                    ret.Clear();
+                }
+                else if (mylist[i].MyKey == curMin)
+                {
+                    ret.Add(mylist[i].MyString);
+                }
+            }
+            return ret.ToArray();
         }
 
         /// <summary>
@@ -1475,6 +1497,12 @@ namespace MSS.Platform.Workflow.WebApi.Service
         public TreeNode left { get; set; }
         public TreeNode right { get; set; }
 
+    }
+
+    public class MyDic
+    {
+        public int MyKey { get; set; }
+        public string MyString { get; set; }
     }
 
     public interface IWorkTaskService

@@ -13,6 +13,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Localization;
 using System.Text;
 using Microsoft.EntityFrameworkCore.Internal;
+using System.Collections;
 
 namespace MSS.Platform.Workflow.WebApi.Service
 {
@@ -570,12 +571,13 @@ namespace MSS.Platform.Workflow.WebApi.Service
             ApiResult ret = new ApiResult();
             try
             {
-                //TreeNode node = CreateTree();
-                //FirstPrint(node);
-                string[] string1 = s.Split(',');
-                string[] string2 = s1.Split(',');
-                //MoveZeroes(arr);
-                ret.data = FindRestaurant(string1, string2);
+                string[] string1 = s1.Split(',');
+                int[] parm = new int[string1.Length];
+                for (int i = 0; i < string1.Length; i++)
+                {
+                    parm[i] = int.Parse(string1[i]);
+                }
+                ret.data = PivotIndex(parm);
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -586,6 +588,81 @@ namespace MSS.Platform.Workflow.WebApi.Service
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// 724. 寻找数组的中心下标
+        /// https://leetcode-cn.com/problems/find-pivot-index/solution/zi-ji-cuo-wu-de-whileleftrightde-si-lu-h-08o9/
+        /// </summary>
+        /// <param name="nums"></param>
+        /// <returns></returns>
+        public int PivotIndex(int[] nums)
+        {
+            int sum = 0;
+            foreach (var n in nums)
+            {
+                sum += n;
+            }
+            int length = nums.Length;
+            if (length == 0 || length == 2) return -1;
+            if (length == 1) return 0;
+
+            int sumLeft = 0;
+
+            for (int i = 0; i < length; i++)
+            {
+                if (sumLeft == sum - nums[i]) return i;
+                sumLeft += nums[i];
+                sum -= nums[i];
+            }
+
+            return -1;
+        }
+
+        public int FindShortestSubArray(int[] nums)
+        {
+            Dictionary<int, int> left = new Dictionary<int, int>();//第一次出现的位置
+            Dictionary<int, int> right = new Dictionary<int, int>();//最后一次出现的位置
+            Dictionary<int, int> count = new Dictionary<int, int>();//出现的次数
+            int maxDegree = 0;
+            for (int i = 0; i < nums.Length; i++)
+            {
+                var cur = nums[i];
+                if (!count.ContainsKey(cur))
+                {
+                    count.Add(cur, 1);
+                    maxDegree = 1;
+                }
+                else
+                {
+                    count[cur]++;
+                    maxDegree = Math.Max(maxDegree, count[cur]);
+                }
+
+                if (!left.ContainsKey(cur))//没有就记录第一次出现,并赋予第一次right
+                {
+                    left.Add(cur, i);
+                    right.Add(cur, i);
+                }
+                else
+                {
+                    right[cur] = i;//有的话则更新right
+                }
+            }
+
+            int ret = nums.Length;
+            foreach (KeyValuePair<int, int> kv in count)
+            {
+                var curDegreee = kv.Value;
+                var curKey = kv.Key;
+                if (curDegreee == maxDegree)
+                {
+                    int tmp = right[curKey] - left[curKey] + 1;
+                    ret = Math.Min(ret, tmp);
+                }
+            }
+            return ret;
+
         }
 
         public string[] FindRestaurant(string[] list1, string[] list2)
@@ -1480,6 +1557,39 @@ namespace MSS.Platform.Workflow.WebApi.Service
     }
 
 
+
+    public class KthLargest
+    {
+        int[] Nums;
+        int K;
+        public KthLargest(int k, int[] nums)
+        {
+            this.Nums = new int[nums.Length];
+            this.K = k;
+            for (int i = 0; i < nums.Length; i++)
+            {
+                this.Nums[i] = nums[i];
+            }
+            //Array.Sort(this.Nums);
+        }
+
+        public int Add(int val)
+        {
+            int[] arr = new int[this.Nums.Length + 1];
+            for (int i = 0; i < this.Nums.Length; i++)
+            {
+                arr[i] = this.Nums[i];
+            }
+            arr[arr.Length - 1] = val;
+            this.Nums = new int[arr.Length];
+            for (int i = 0; i < this.Nums.Length; i++)
+            {
+                this.Nums[i] = arr[i];
+            }
+            Array.Sort(this.Nums);
+            return this.Nums[this.Nums.Length - this.K];
+        }
+    }
     public class ListNode
     {
         public int val;

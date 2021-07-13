@@ -69,7 +69,8 @@
       </el-table-column>
       <el-table-column label="持有收益" prop="balance" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.percentGrowth }}%</span>
+          <span v-if="row.percentGrowth > 0" style="color:#DC143C">{{ row.percentGrowth }}%</span>
+          <span v-if="row.percentGrowth <= 0" style="color:#006400">{{ row.percentGrowth }}%</span>
         </template>
       </el-table-column>
       <el-table-column label="今日预估" prop="balance" width="110px" align="center">

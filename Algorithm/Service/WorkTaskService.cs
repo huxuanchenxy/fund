@@ -35,17 +35,16 @@ namespace MSS.Platform.Workflow.WebApi.Service
             ApiResult ret = new ApiResult();
             try
             {
-                //string[] string1 = s1.Split(',');
-                //int[] parm = new int[string1.Length];
-                //for (int i = 0; i < string1.Length; i++)
-                //{
-                //    parm[i] = int.Parse(string1[i]);
-                //}
+                string[] string1 = s.Split(',');
+                int[] parm = new int[string1.Length];
+                for (int i = 0; i < string1.Length; i++)
+                {
+                    parm[i] = int.Parse(string1[i]);
+                }
 
                 //TreeNode root = new TreeNode() { val = 3, right = new TreeNode() { val = 20, left = new TreeNode() { val = 15 }, right = new TreeNode() { val = 7 } } };
-                string pp = "Bob hit a ball, the hit BALL flew far after it was hit.";
-                string[] ban = new string[1] { "hit"};
-                ret.data = MostCommonWord(pp,ban);
+                //string[] parm = new string[] {"test.email+alex@leetcode.com", "test.email@leetcode.com" };
+                ret.data = LastStoneWeight(parm);
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -56,6 +55,129 @@ namespace MSS.Platform.Workflow.WebApi.Service
             }
 
             return ret;
+        }
+
+        public int LastStoneWeight(int[] stones)
+        {
+            List<int> list = new List<int>();
+            foreach (var s in stones)
+            {
+                list.Add(s);
+            }
+            list.Sort();
+            int ret = 0;
+            while (list.Count != 0)
+            {
+                if (list.Count == 1)
+                {
+                    ret = list[0];
+                    break;
+                }
+                int big = list[list.Count - 1];
+                list.RemoveAt(0);
+                int small = list[list.Count - 1];
+                list.RemoveAt(0);
+                if (big != small)
+                {
+                    list.Add(big - small);
+                    list.Sort();
+                }
+
+            }
+            return ret;
+        }
+
+        public int NumUniqueEmails(string[] emails)
+        {
+            HashSet<string> hash = new HashSet<string>();
+            foreach (var e in emails)
+            {
+                string[] str = e.Split('@');
+                string local = str[0].Replace(".", "");
+                int indexfirstplus = local.IndexOf('+');
+                if (indexfirstplus >= 0)
+                {
+                    local = local.Substring(0, indexfirstplus - 1);
+                }
+                string cur = local + str[1];
+                if (!hash.Contains(cur))
+                {
+                    hash.Add(cur);
+                }
+
+            }
+            return hash.Count;
+        }
+
+        public int RobotSim(int[] commands, int[][] obstacles)
+        {
+            int x = 0, y = 0;//当前坐标位置
+            int ret = 0;
+            int direction = 0;//0北1东2南3西 是dx dy的下标
+                              // int[] dx = new int[4]{0,1,0,-1};
+                              // int[] dy = new int[4]{1,0,-1,0}; 
+            int[] dx = new int[] { 0, 1, 0, -1 };
+            int[] dy = new int[] { 1, 0, -1, 0 };
+
+
+            HashSet<point> hash = new HashSet<point>();//先保存所有障碍坐标
+            foreach (var o in obstacles)
+            {
+                hash.Add(new point(o[0], o[1]));
+            }
+            for (int i = 0; i < commands.Length; i++)
+            {
+                if (commands[i] == -2)
+                {
+                    direction = (direction + 3) % 4;//对应到dx或者dy的四个下标
+                }
+                else if (commands[i] == -1)
+                {
+                    direction = (direction + 1) % 4;
+                }
+                else
+                {
+                    //开始一步一步走，走到障碍物就停止
+                    for (int j = 1; j < commands[i]; j++)
+                    {
+                        // var nextX = x + dx[direction];
+                        // var nextY = y + dy[direction];
+                        // var curP = new point(nextX,nextY);
+                        // if(hash.Contains(curP))
+                        // {
+                        //     break;
+                        // }else{
+                        //     x = nextX;
+                        //     y = nextY;
+                        //     ret = Math.Max(ret,x*x+ y*y);
+                        // }
+                        if (hash.Contains(new point(x + dx[direction], y + dy[direction])))
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            x += dx[direction];
+                            y += dy[direction];
+                        }
+
+                    }
+                }
+                ret = Math.Max(ret, (int)Math.Pow(x, 2) + (int)Math.Pow(y, 2));
+
+            }
+            return ret;
+        }
+
+        struct point
+        {
+            public int X;
+            public int Y;
+            public point(int x, int y)
+            {
+                this.X = x;
+                this.Y = y;
+            }
         }
 
         public string MostCommonWord(string paragraph, string[] banned)
@@ -255,7 +377,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
             {
                 while (st.Count != 0 && nums2[i] > st.Peek())
                 {
-                    dic.Add(st.Pop(),nums2[i]);
+                    dic.Add(st.Pop(), nums2[i]);
                 }
                 st.Push(nums2[i]);
             }
@@ -270,7 +392,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
             }
             return nums1;
         }
-         
+
 
         public bool RepeatedSubstringPattern(string s)
         {
@@ -313,7 +435,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
             }
             int[] ret = new int[hash.Count];
             int index = 0;
-            foreach(var tmp in hash)
+            foreach (var tmp in hash)
             {
                 ret[index++] = tmp;
             }
@@ -343,7 +465,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
         {
             ListNode tmp = head;
             Stack<int> st = new Stack<int>();
-            while(tmp != null)
+            while (tmp != null)
             {
                 st.Push(tmp.val);
                 tmp = tmp.next;
@@ -412,14 +534,14 @@ namespace MSS.Platform.Workflow.WebApi.Service
                         end = i;
                         start = end;
                         ret = end - start + 1;
-                        if (start -1  == -1)
+                        if (start - 1 == -1)
                         {
                             return 1;
                         }
                     }
                     else
                     {
-                        
+
                         if (s[start - 1] == ' ')
                         {
                             ret = end - start + 1;
@@ -1163,7 +1285,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
     public interface IWorkTaskService
     {
         Task<ApiResult> Algorithm(string s, string s1);
-        
+
     }
 
 

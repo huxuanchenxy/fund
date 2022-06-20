@@ -7,7 +7,6 @@ using MSS.Platform.Workflow.WebApi.Data;
 using MSS.Platform.Workflow.WebApi.Service;
 using MSS.API.Common;
 using MSS.Platform.Workflow.WebApi.Infrastructure;
-using MSS.Common.Consul;
 using static MSS.API.Common.Const;
 using Microsoft.Extensions.Options;
 using Quartz;
@@ -84,7 +83,7 @@ namespace MSS.Platform.Workflow.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime, IOptions<ConsulServiceEntity> consulService)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {

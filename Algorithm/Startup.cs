@@ -3,16 +3,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MSS.Platform.Workflow.WebApi.Data;
-using MSS.Platform.Workflow.WebApi.Service;
-using MSS.API.Common;
-using MSS.Platform.Workflow.WebApi.Infrastructure;
-using MSS.Common.Consul;
-using static MSS.API.Common.Const;
 using Microsoft.Extensions.Options;
+using MSS.API.Common;
+using MSS.Platform.Workflow.WebApi.Data;
+using MSS.Platform.Workflow.WebApi.Infrastructure;
+using MSS.Platform.Workflow.WebApi.Service;
 using Quartz;
 using Quartz.Impl;
-using Quartz.Spi;
 
 namespace MSS.Platform.Workflow.WebApi
 {
@@ -81,7 +78,7 @@ namespace MSS.Platform.Workflow.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime, IOptions<ConsulServiceEntity> consulService)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {

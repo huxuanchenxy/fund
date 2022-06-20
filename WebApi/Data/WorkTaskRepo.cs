@@ -41,7 +41,7 @@ namespace MSS.Platform.Workflow.WebApi.Data
                 networth,
                 totalworth,
                 worthdate,expectgrowth,
-                daygrowth,updatetime FROM myfund
+                daygrowth,updatetime FROM myfund2
                  ");
                 StringBuilder whereSql = new StringBuilder();
 
@@ -275,7 +275,7 @@ namespace MSS.Platform.Workflow.WebApi.Data
         {
             return await WithConnection(async c =>
             {
-                string sql = $@" INSERT INTO `myfund`(
+                string sql = $@" INSERT INTO `myfund2`(
                     
                     code,
                     name,
@@ -310,7 +310,7 @@ namespace MSS.Platform.Workflow.WebApi.Data
         {
             return await WithConnection(async c =>
             {
-                var result = await c.ExecuteAsync($@" UPDATE myfund set 
+                var result = await c.ExecuteAsync($@" UPDATE myfund2 set 
                     networth=@Networth,
                     totalworth=@Totalworth,
                     worthdate=@Worthdate,
@@ -325,7 +325,7 @@ namespace MSS.Platform.Workflow.WebApi.Data
         {
             return await WithConnection(async c =>
             {
-                var result = await c.ExecuteAsync($@" UPDATE myfund set 
+                var result = await c.ExecuteAsync($@" UPDATE myfund2 set 
                     balance=@Balance,
                     costavg=@Costavg,
                     updatetime=@Updatetime
@@ -338,7 +338,7 @@ namespace MSS.Platform.Workflow.WebApi.Data
         {
             return await WithConnection(async c =>
             {
-                var result = await c.ExecuteAsync($@" UPDATE myfund set 
+                var result = await c.ExecuteAsync($@" UPDATE myfund2 set 
                     expectgrowth=@ExpectGrowth
                  where id=@Id", obj);
                 return result;
@@ -350,7 +350,7 @@ namespace MSS.Platform.Workflow.WebApi.Data
             return await WithConnection(async c =>
             {
                 var result = await c.QueryFirstOrDefaultAsync<Myfund>(
-                    "SELECT * FROM myfund WHERE code = @code", new { code = code });
+                    "SELECT * FROM myfund2 WHERE code = @code", new { code = code });
                 return result;
             });
         }
@@ -360,7 +360,7 @@ namespace MSS.Platform.Workflow.WebApi.Data
             return await WithConnection(async c =>
             {
                 var result = await c.QueryFirstOrDefaultAsync<Myfund>(
-                    "SELECT * FROM myfund WHERE id = @id", new { id = id });
+                    "SELECT * FROM myfund2 WHERE id = @id", new { id = id });
                 return result;
             });
         }
@@ -370,7 +370,7 @@ namespace MSS.Platform.Workflow.WebApi.Data
             return await WithConnection(async c =>
             {
                 var result = await c.QueryFirstOrDefaultAsync<Myfund>(
-                    "SELECT SUM(balance) balance FROM myfund");
+                    "SELECT SUM(balance) balance FROM myfund2");
                 return result;
             });
         }

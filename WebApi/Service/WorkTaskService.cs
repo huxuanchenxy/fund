@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using MSS.API.Common;
 using MSS.API.Common.Utility;
-using MSS.Common.Consul;
 using MSS.Platform.Workflow.WebApi.Data;
 using MSS.Platform.Workflow.WebApi.Model;
 using System;

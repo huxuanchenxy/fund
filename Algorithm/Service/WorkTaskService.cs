@@ -1,19 +1,14 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Caching.Distributed;
 using MSS.API.Common;
 using MSS.API.Common.Utility;
-using MSS.Common.Consul;
 using MSS.Platform.Workflow.WebApi.Data;
 using MSS.Platform.Workflow.WebApi.Model;
 using System;
-using System.Net;
-using System.Threading.Tasks;
-using MSS.API.Common.DistributedEx;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Localization;
 using System.Text;
-using Microsoft.EntityFrameworkCore.Internal;
-using System.Collections;
+using System.Threading.Tasks;
 
 namespace MSS.Platform.Workflow.WebApi.Service
 {
@@ -44,7 +39,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
 
                 //TreeNode root = new TreeNode() { val = 3, right = new TreeNode() { val = 20, left = new TreeNode() { val = 15 }, right = new TreeNode() { val = 7 } } };
                 //string[] parm = new string[] {"test.email+alex@leetcode.com", "test.email@leetcode.com" };
-                ret.data = LastStoneWeight(parm);
+                ret.data = TwoSum(parm,int.Parse(s1));
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -55,6 +50,26 @@ namespace MSS.Platform.Workflow.WebApi.Service
             }
 
             return ret;
+        }
+
+
+        //1. 两数之和
+        public int[] TwoSum(int[] nums, int target)
+        {
+            Dictionary<int, int> dic = new Dictionary<int, int>();
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (dic.ContainsKey(target - nums[i]))
+                {
+                    return new int[] { dic[target - nums[i]], i };
+                }
+                else
+                {
+                    dic.Add(nums[i], i);
+                }
+
+            }
+            return new int[0];
         }
 
         public int LastStoneWeight(int[] stones)

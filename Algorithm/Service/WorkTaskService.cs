@@ -37,9 +37,16 @@ namespace MSS.Platform.Workflow.WebApi.Service
                     parm[i] = int.Parse(string1[i]);
                 }
 
+                string[] string2 = s1.Split(',');
+                int[] parm1 = new int[string2.Length];
+                for (int i = 0; i < string2.Length; i++)
+                {
+                    parm1[i] = int.Parse(string2[i]);
+                }
+
                 //TreeNode root = new TreeNode() { val = 3, right = new TreeNode() { val = 20, left = new TreeNode() { val = 15 }, right = new TreeNode() { val = 7 } } };
                 //string[] parm = new string[] {"test.email+alex@leetcode.com", "test.email@leetcode.com" };
-                ret.data = TwoSum(parm,int.Parse(s1));
+                ret.data = FindMedianSortedArrays(parm, parm1);
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -63,13 +70,97 @@ namespace MSS.Platform.Workflow.WebApi.Service
                 {
                     return new int[] { dic[target - nums[i]], i };
                 }
-                else
+                if (!dic.ContainsKey(nums[i]))
                 {
                     dic.Add(nums[i], i);
                 }
 
             }
             return new int[0];
+        }
+
+
+        //4. 寻找两个正序数组的中位数
+        public double FindMedianSortedArrays(int[] nums1, int[] nums2)
+        {
+            int m = nums1.Length;
+            int n = nums2.Length;
+
+
+            if (m == 0)//这时下面的 nums1[i] < nums2[j] 会超边界报错，所以要特殊判断
+            {
+                if ((n & 1) != 0)//奇数
+                {
+                    return (double)nums2[n / 2];
+                }
+                else
+                {
+                    return (double)(nums2[n / 2] + nums2[n / 2 - 1]) / 2.0;
+                }
+            }
+            if (n == 0)
+            {
+                if ((m & 1) != 0)
+                {
+                    return (double)nums1[m / 2];
+                }
+                else
+                {
+                    return (double)(nums1[m / 2] + nums1[m / 2 - 1]) / 2.0;
+                }
+            }
+
+
+            int p = 0;
+            int[] arr = new int[m + n];
+            int i = 0;
+            int j = 0;
+
+
+
+            while (p < (m + n))
+            {
+                if (nums1[i] < nums2[j])
+                {
+                    arr[p] = nums1[i];
+                    i++;
+                }
+                else
+                {
+                    arr[p] = nums2[j];
+                    j++;//这一步，当前的nums2有可能超边界了，会导致 上面的 nums1[i] < nums2[j] 报错
+                }
+                p++;
+
+                if (j == n)//超边界了,则把剩余的m全部放入arr里
+                {
+                    while (p < (m + n))
+                    {
+                        arr[p] = nums1[i++];
+                        p++;
+                    }
+                    break;
+                }
+                if (i == m)//i 超边界了，则把剩余的n全部放到arr里
+                {
+                    while (p < (m + n))
+                    {
+                        arr[p] = nums2[j++];
+                        p++;
+                    }
+                    break;
+                }
+            }
+
+            int len = m + n;
+            if ((len & 1) != 0)//奇数
+            {
+                return (double)arr[len / 2];
+            }
+            else
+            {
+                return (double)((arr[len / 2] * 1.0 + arr[len / 2 - 1] * 1.0) / 2.0);
+            }
         }
 
         public int LastStoneWeight(int[] stones)

@@ -30,23 +30,23 @@ namespace MSS.Platform.Workflow.WebApi.Service
             ApiResult ret = new ApiResult();
             try
             {
-                string[] string1 = s.Split(',');
-                int[] parm = new int[string1.Length];
-                for (int i = 0; i < string1.Length; i++)
-                {
-                    parm[i] = int.Parse(string1[i]);
-                }
+                //string[] string1 = s.Split(',');
+                //int[] parm = new int[string1.Length];
+                //for (int i = 0; i < string1.Length; i++)
+                //{
+                //    parm[i] = int.Parse(string1[i]);
+                //}
 
-                string[] string2 = s1.Split(',');
-                int[] parm1 = new int[string2.Length];
-                for (int i = 0; i < string2.Length; i++)
-                {
-                    parm1[i] = int.Parse(string2[i]);
-                }
+                //string[] string2 = s1.Split(',');
+                //int[] parm1 = new int[string2.Length];
+                //for (int i = 0; i < string2.Length; i++)
+                //{
+                //    parm1[i] = int.Parse(string2[i]);
+                //}
 
                 //TreeNode root = new TreeNode() { val = 3, right = new TreeNode() { val = 20, left = new TreeNode() { val = 15 }, right = new TreeNode() { val = 7 } } };
                 //string[] parm = new string[] {"test.email+alex@leetcode.com", "test.email@leetcode.com" };
-                ret.data = FindMedianSortedArrays(parm, parm1);
+                ret.data = AddBinary1(s, s1);
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -57,6 +57,26 @@ namespace MSS.Platform.Workflow.WebApi.Service
             }
 
             return ret;
+        }
+
+        //67. 二进制求和
+        public string AddBinary1(string a, string b)
+        {
+            string ret = "";
+            int ca = 0;
+            for (int i = a.Length - 1, j = b.Length - 1; i >= 0 || j >= 0; i--, j--)
+            {
+                int cur = ca;
+                cur += i >= 0 ? int.Parse(a[i].ToString()) : 0;
+                cur += j >= 0 ? int.Parse(b[j].ToString()) : 0;
+                ret += cur % 2;
+                ca = cur >= 2 ? 1 : 0;
+            }
+            ret += ca == 1 ? "1" : "";
+            //return ret;
+            char[] chars = ret.ToCharArray();
+            Array.Reverse(chars);
+            return new string(chars);
         }
 
 

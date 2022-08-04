@@ -4,6 +4,7 @@ using MSS.API.Common;
 using MSS.API.Common.Utility;
 using MSS.Platform.Workflow.WebApi.Data;
 using MSS.Platform.Workflow.WebApi.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +47,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
 
                 //TreeNode root = new TreeNode() { val = 3, right = new TreeNode() { val = 20, left = new TreeNode() { val = 15 }, right = new TreeNode() { val = 7 } } };
                 //string[] parm = new string[] {"test.email+alex@leetcode.com", "test.email@leetcode.com" };
-                ret.data = AddBinary1(s, s1);
+                ret.data = getWebServiceRobot();
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -56,6 +57,73 @@ namespace MSS.Platform.Workflow.WebApi.Service
                 ret.msg = ex.Message;
             }
 
+            return ret;
+        }
+
+
+        //测试解析国自机器人动态key json
+        private RobotData getWebServiceRobot()
+        {
+            RobotData ret = new RobotData();
+            string jsonstr = "{\"robotPositon\": [1.1264249182067455e-306,2.6486159474226165e+219],\"height\": 1.5,\"rotationAngle \":8.398069194280365e-284,\"gasData\": [{\"id\": 1,\"TEM\": 0,\"isAlarm\": false},{\"id\": 2,\"HUM\": 0,\"isAlarm\": false},{\"id\":10,\"NOISE\": 0,\"isAlarm\": false}],\"collectTime\": \"2022-08-04 08:41:58\"}";
+            RobotData old = JsonConvert.DeserializeObject<RobotData>(jsonstr);
+            if (old != null)
+            {
+                ret.height = old.height;
+                ret.rotationAngle = old.rotationAngle;
+                ret.collectTime = Convert.ToDateTime(old.collectTime).ToString("yyyy-MM-dd HH:mm:ss");
+                if (old.robotPositon != null && old.robotPositon.Count == 2)
+                {
+                    ret.robotPositonX = old.robotPositon[0].ToString();
+                    ret.robotPositonY = old.robotPositon[1].ToString();
+                }
+                var gd = old.gasData;
+                if (gd != null)
+                {
+                    ret.gasDatav2 = new RobotGasData();
+                    foreach (var cur in gd)
+                    {
+                        string curstr = JsonConvert.SerializeObject(cur);
+                        var model = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(curstr);
+                        foreach (var m in model)
+                        {
+                            var key = m.Key;
+                            var value = m.Value;
+                            switch (key.ToLower())
+                            {
+                                case "ch4":
+                                    ret.gasDatav2.ch4 = Convert.ToString(value);
+                                    break;
+                                case "h2s":
+                                    ret.gasDatav2.h2s = Convert.ToString(value);
+                                    break;
+                                case "o2":
+                                    ret.gasDatav2.o2 = Convert.ToString(value);
+                                    break;
+                                case "co":
+                                    ret.gasDatav2.co = Convert.ToString(value);
+                                    break;
+                                case "tem":
+                                    ret.gasDatav2.tem = Convert.ToString(value);
+                                    break;
+                                case "hum":
+                                    ret.gasDatav2.hum = Convert.ToString(value);
+                                    break;
+                                case "smog":
+                                    ret.gasDatav2.smog = Convert.ToString(value);
+                                    break;
+                                case "pm25":
+                                    ret.gasDatav2.pm25 = Convert.ToString(value);
+                                    break;
+                                case "pm10":
+                                    ret.gasDatav2.pm10 = Convert.ToString(value);
+                                    break;
+                            }
+                        }
+
+                    }
+                }
+            }
             return ret;
         }
 
@@ -1351,6 +1419,32 @@ namespace MSS.Platform.Workflow.WebApi.Service
 
 
 
+
+    public class RobotData
+    {
+        public List<string> robotPositon { get; set; }
+        public string robotPositonX { get; set; }
+        public string robotPositonY { get; set; }
+        public string height { get; set; }
+        public string rotationAngle { get; set; }
+        public string collectTime { get; set; }
+        public RobotGasData gasDatav2 { get; set; }
+        public List<Object> gasData { get; set; }
+    }
+
+    public class RobotGasData
+    {
+        public string ch4 { get; set; }//甲烷
+        public string h2s { get; set; }//硫化氢
+        public string o2 { get; set; }//氧气
+        public string co { get; set; }//一氧化碳
+        public string tem { get; set; }//温度
+        public string hum { get; set; }//湿度
+        public string smog { get; set; }//烟雾
+        public string pm25 { get; set; }
+
+        public string pm10 { get; set; }
+    }
     public class KthLargest
     {
         int[] Nums;

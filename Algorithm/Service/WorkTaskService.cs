@@ -5,11 +5,13 @@ using MSS.API.Common.Utility;
 using MSS.Platform.Workflow.WebApi.Data;
 using MSS.Platform.Workflow.WebApi.Model;
 using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace MSS.Platform.Workflow.WebApi.Service
 {
@@ -47,7 +49,7 @@ namespace MSS.Platform.Workflow.WebApi.Service
 
                 //TreeNode root = new TreeNode() { val = 3, right = new TreeNode() { val = 20, left = new TreeNode() { val = 15 }, right = new TreeNode() { val = 7 } } };
                 //string[] parm = new string[] {"test.email+alex@leetcode.com", "test.email@leetcode.com" };
-                ret.data = getWebServiceRobot();
+                ret.data = GetXML();
                 ret.code = Code.Success;
                 //ret.data = data;
             }
@@ -60,6 +62,41 @@ namespace MSS.Platform.Workflow.WebApi.Service
             return ret;
         }
 
+        /// <summary>
+        /// 请求webservice
+        /// </summary>
+        /// <returns></returns>
+        private string GetXML()
+        {
+            var client = new RestClient("http://47.101.220.2:11456");
+            client.Timeout = -1;
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Content-Type", "text/xml");
+            var body = @"<soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:stat=""http://tempuri.org/station.xsd"">
+" + "\n" +
+            @"   <soapenv:Header/>
+" + "\n" +
+            @"   <soapenv:Body>
+" + "\n" +
+            @"      <stat:GetRobotRealTimeInfo>
+" + "\n" +
+            @"         <RobotId>1</RobotId>
+" + "\n" +
+            @"      </stat:GetRobotRealTimeInfo>
+" + "\n" +
+            @"   </soapenv:Body>
+" + "\n" +
+            @"</soapenv:Envelope>";
+            request.AddParameter("text/xml", body, ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+
+            //MessageBox.Show(response.Content);
+            var strxml = response.Content;
+            XmlDocument xmldoc = new XmlDocument();
+            xmldoc.LoadXml(strxml);
+            string ret = xmldoc.InnerText;
+            return ret;
+        }
 
         //测试解析国自机器人动态key json
         private RobotData getWebServiceRobot()
